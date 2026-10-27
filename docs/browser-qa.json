@@ -1,0 +1,20 @@
+{
+  "base": "http://localhost:4173",
+  "checks": [
+    "All ten profile controls update the active profile and fingerprint",
+    "Profile keyboard navigation",
+    "Three historical presets produce expected identities",
+    "Slider updates all outputs and labels edited data illustrative",
+    "Three preview formats and three real SVG downloads",
+    "Clear, empty state, disabled download and reset",
+    "System tabs, keyboard navigation and method disclosure",
+    "All gallery filters",
+    "Specimen dialog, Escape and focus restoration",
+    "320, 390, 768 and 1440px layouts: no horizontal overflow, all images loaded",
+    "Reduced motion respected",
+    "Fresh-load section deep link",
+    "No browser exceptions or failed HTTP assets"
+  ],
+  "errors": [],
+  "fails": []
+}

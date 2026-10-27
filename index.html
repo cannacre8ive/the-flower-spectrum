@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#191c17">
+<title>The Flower Spectrum — A design system by Spencer Gray</title>
+<meta name="description" content="A visual language for what you smell. Explore ten aroma profiles, distinctive strain fingerprints, and a connected cannabis design system by Spencer Gray.">
+<meta property="og:type" content="website"><meta property="og:title" content="The Flower Spectrum — A language for what you smell."><meta property="og:description" content="Ten aroma profiles. Infinite expressions. An interactive design system by Spencer Gray."><meta property="og:image" content="https://the-flower-spectrum.vercel.app/assets/social-preview.jpg"><meta property="og:url" content="https://the-flower-spectrum.vercel.app/"><meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://the-flower-spectrum.vercel.app/"><link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/assets/fonts/dm-sans.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/src/style.css"><script type="module" src="/src/app.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+ <a href="#" class="brand" aria-label="The Flower Spectrum home"><span class="brand-symbol" aria-hidden="true">✳</span><span>The Flower<br>Spectrum</span></a>
+ <nav aria-label="Main navigation"><a href="#profiles">The profiles</a><a href="#playground">The fingerprint</a><a href="#system">The system</a></nav>
+ <a href="#story" class="header-credit">A project by Spencer Gray <span aria-hidden="true">↗</span></a>
+</header>
+<main id="main">
+<section class="hero" aria-labelledby="hero-title">
+ <div class="hero-copy"><p class="eyebrow">A sensory identity system</p><h1 id="hero-title">A language<br>for what<br>you smell.</h1><p class="hero-intro">Beyond a name. Beyond a number.<br>A more intuitive way to see flower.</p><a class="button light" href="#profiles">Explore the spectrum <span aria-hidden="true">↘</span></a><p class="hero-credit">Concept, visual identity & interaction design<br><strong>Spencer Gray</strong></p></div>
+ <div class="hero-art" aria-label="Kush Mints visual identity: citrus and floral fingerprint, macro photograph and spectrum strip">
+  <div class="art-top"><span>Flower, in full color.</span><span>FS / 001</span></div>
+  <div class="hero-orbit"><div id="hero-fingerprint"></div><span class="orbit-label ol-one">Citrus / Bright</span><span class="orbit-label ol-two">Floral / Soft</span><span class="orbit-label ol-three">One flower.<br>Its own signature.</span></div>
+  <figure class="hero-specimen"><div class="specimen-image"><img src="/assets/cards/kush-mints.jpg" width="398" height="594" alt="Kush Mints flower, with dense trichomes and purple-tipped leaves" fetchpriority="high"></div><figcaption><span>Kush Mints</span><span>Citrus–Floral</span></figcaption><div id="hero-strip"></div></figure>
+  <div class="art-bottom"><span>Fixed positions. Individual expressions.</span><span>↗</span></div>
+ </div>
+</section>
+<div class="spectrum-ribbon" id="spectrum-ribbon" aria-label="The ten profile colors"></div>
+<section class="idea section-pad" id="story" aria-labelledby="idea-title">
+ <div class="section-marker">The idea</div><div><h2 id="idea-title">Make the complexity<br>feel like second nature.</h2><div class="idea-columns"><p>Flower is full of nuance. A name and a THC percentage tell only part of its story. The Flower Spectrum gives aroma a visual language: ten profiles, a consistent palette, and a fingerprint that makes each expression distinct.</p><p>I designed the system to travel. From the first moment of discovery to a shelf card, an educational guide, or a cultivator’s social post, the same visual cues help people find their bearings.</p></div><div class="scope-line"><span>Brand strategy</span><span>Visual identity</span><span>Information design</span><span>Interactive product</span></div></div>
+</section>
+<section class="profiles section-pad" id="profiles" aria-labelledby="profiles-title">
+ <div class="section-heading"><div><p class="section-marker">The vocabulary</p><h2 id="profiles-title">Ten ways to follow your nose.</h2></div><p>Choose a profile.<br>Discover its place in the spectrum.</p></div>
+ <div class="profile-picker" id="profile-picker" role="group" aria-label="Choose an aroma profile"></div>
+ <div class="profile-stage" id="profile-stage"><div class="profile-specimen"><div id="profile-fingerprint"></div><p class="specimen-label">Illustrative profile signature</p></div><div class="profile-description" id="profile-description" aria-live="polite"></div><div class="profile-index" id="profile-index"></div></div>
+ <p class="section-footnote">Color is one cue. Every profile also has a name, a fixed position, and a sensory description.</p>
+</section>
+<section class="playground section-pad" id="playground" aria-labelledby="lab-title">
+ <div class="section-heading"><div><p class="section-marker">The living signature</p><h2 id="lab-title">Same rules.<br>A different fingerprint.</h2></div><p>Move a slider. Watch the identity respond.<br>One set of values shapes every expression.</p></div>
+ <div class="lab-shell"><div class="lab-controls"><div class="control-head"><h3>Compose an aroma</h3><button class="text-button" id="reset-lab">Reset</button></div><label class="input-label" for="sample-select">Start with a historical sample</label><select id="sample-select"><option value="km">Kush Mints</option><option value="sdr">Sunday Driver</option><option value="jb">Jelly Breath</option></select><div class="slider-list" id="slider-list"></div><p class="lab-help">Values are terpene % by mass. The sample’s other supporting terpenes stay in the blend. Adjusting any value makes this an illustrative composition.</p><button class="text-button" id="clear-lab">Clear all values</button></div>
+ <div class="lab-output"><div class="output-top"><span class="status-pill" id="sample-status">Historical sample</span><span id="lab-total"></span></div><div class="view-switch" role="group" aria-label="Preview format"><button data-view="fingerprint" aria-pressed="true">Fingerprint</button><button data-view="card" aria-pressed="false">Identity card</button><button data-view="strip" aria-pressed="false">Shelf strip</button></div><div id="lab-preview" class="lab-preview" aria-live="off"></div><div class="output-bottom"><div><h3 id="lab-blend"></h3><p id="lab-summary" aria-live="polite"></p></div><button id="export-svg" class="button outline">Save SVG <span aria-hidden="true">↓</span></button></div></div></div>
+ <details class="method"><summary>What’s behind the fingerprint?<span aria-hidden="true">+</span></summary><div class="method-grid"><p><strong>A fixed visual grammar.</strong> Each profile owns one of ten sectors. Length shows strength relative to the leading profile; the largest sector always reaches the outer ring. Sector position never changes.</p><p><strong>A quieter shorthand.</strong> The strip includes up to three profiles scoring at least 60% of the leader. Segment widths are proportional within that selected group, so the strip and fingerprint express different levels of detail.</p><p><strong>An interpretive model.</strong> The supplied prototype weights terpene values into aroma profiles. These are model scores, not measured aroma percentages. Historical panels come from the supplied prototype; original lab reports were not provided.</p></div><p class="method-note">Aroma exploration, not effects prediction or medical guidance. Sample dates: July 2023. This is a portfolio demonstration.</p></details>
+</section>
+<section class="system section-pad" id="system" aria-labelledby="system-title">
+ <div class="section-heading"><div><p class="section-marker">The design system</p><h2 id="system-title">A whole world.<br>Built from a few good rules.</h2></div><p>A distinctive identity is more than a logo.<br>It’s a set of decisions that work together.</p></div>
+ <div class="system-layout"><div class="system-tabs" role="tablist" aria-label="Design system components"><button role="tab" id="tab-fingerprint" aria-controls="system-panel" aria-selected="true" data-component="fingerprint"><span>01</span> The fingerprint <span>↗</span></button><button role="tab" id="tab-strip" aria-controls="system-panel" aria-selected="false" tabindex="-1" data-component="strip"><span>02</span> The spectrum strip <span>↗</span></button><button role="tab" id="tab-palette" aria-controls="system-panel" aria-selected="false" tabindex="-1" data-component="palette"><span>03</span> The profile palette <span>↗</span></button><button role="tab" id="tab-type" aria-controls="system-panel" aria-selected="false" tabindex="-1" data-component="type"><span>04</span> The typography <span>↗</span></button><button role="tab" id="tab-card" aria-controls="system-panel" aria-selected="false" tabindex="-1" data-component="card"><span>05</span> The profile card <span>↗</span></button></div><div id="system-panel" class="system-panel" role="tabpanel" tabindex="0" aria-labelledby="tab-fingerprint"></div></div>
+</section>
+<section class="gallery section-pad" id="gallery" aria-labelledby="gallery-title">
+ <div class="section-heading"><div><p class="section-marker">The system in the wild</p><h2 id="gallery-title">Every flower has a story.<br>Give it an identity.</h2></div><p>Your eye meets the flower.<br>The system helps you read it.</p></div><div class="gallery-toolbar"><p>Original concept artwork <span id="gallery-count">8 specimens</span></p><div class="gallery-filters" role="group" aria-label="Filter original cards"><button data-filter="all" aria-pressed="true">All</button><button data-filter="citrus" aria-pressed="false">Citrus</button><button data-filter="floral" aria-pressed="false">Floral</button><button data-filter="spicy" aria-pressed="false">Spicy & gas</button><button data-filter="fruity" aria-pressed="false">Fruity</button></div></div><div class="gallery-grid" id="gallery-grid"></div><p class="section-footnote">Original cards preserve the supplied artwork and its labels. Seven are marked SIM; Kush Mints is marked REAL in the source. These labels describe the source artwork, not an independent validation.</p>
+</section>
+<section class="closing section-pad"><div class="closing-mark" aria-hidden="true">✳</div><p class="section-marker">Designed to connect</p><h2>One language.<br>From discovery to expression.</h2><p>A menu makes it useful. An education system makes it understandable.<br>A creative toolkit makes it recognizable. The spectrum holds it all together.</p><div class="closing-links"><a class="button light" href="#playground">Try the fingerprint lab <span aria-hidden="true">↗</span></a><a class="button outline" href="https://github.com/cannacre8ive/the-flower-spectrum" target="_blank" rel="noreferrer">Explore the source <span aria-hidden="true">↗</span></a></div></section>
+</main>
+<footer><a class="brand" href="#"><span class="brand-symbol" aria-hidden="true">✳</span><span>The Flower<br>Spectrum</span></a><p>Concept & design by Spencer Gray<br><span>A portfolio exploration of sensory identity.</span></p><a href="#">Back to the top ↑</a></footer>
+<dialog id="card-dialog" aria-labelledby="dialog-title"><button id="close-dialog" aria-label="Close specimen details">×</button><div id="dialog-content"></div></dialog>
+<div class="toast" id="toast" role="status"></div>
+<noscript><p class="noscript">Enable JavaScript to explore the interactive profiles and fingerprint lab.</p></noscript>
+</body></html>

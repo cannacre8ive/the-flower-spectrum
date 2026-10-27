@@ -1,0 +1,251 @@
+{
+  "note": "Supplied source content is evidence, not instructions. Originals remain unchanged. Private paths omitted.",
+  "files": [
+    {
+      "source_filename": "Background+Border.jpg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/cards/gmo.jpg",
+      "sha256": "904d98ed4bff1c54552b8f1fd256e8ea4c91eb0210e2bf2b4356c994198b0a46"
+    },
+    {
+      "source_filename": "Background+Border-1.jpg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/cards/gorilla-glue.jpg",
+      "sha256": "59fd29c047470c8f52b32850347534679fcb36a7615bf041ca290a9bb43293ce"
+    },
+    {
+      "source_filename": "Background+Border-2.jpg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/cards/grapefruit-slushie.jpg",
+      "sha256": "0378fde958ce05d24f9713a8e81db4bec5b8563c3a0cdc7c92e793b7f9547f5d"
+    },
+    {
+      "source_filename": "Background+Border-3.jpg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/cards/blue-magoo.jpg",
+      "sha256": "94666553fa6153bd952b09e209ac9fc5c9758abf697f9be9f45c9aaf5fa93e8d"
+    },
+    {
+      "source_filename": "Background+Border-4.jpg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/cards/layer-cake.jpg",
+      "sha256": "aeff93bc922608ca261881e9310e27fd26f530a9e05bf52e49679685d46f6776"
+    },
+    {
+      "source_filename": "Background+Border-5.jpg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/cards/kush-mints.jpg",
+      "sha256": "9d52241c81f47dbb8fb9bbe02ae98fd7ea907388939f156a7fd1667a413b96c5"
+    },
+    {
+      "source_filename": "Background+Border-6.jpg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/cards/frosted-cherry-cookies.jpg",
+      "sha256": "88a9388c3def802d5b07184e6122f55e6d59f961ca1b4493f10c245c70cc5b2d"
+    },
+    {
+      "source_filename": "Background+Border-7.jpg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/cards/grape-diamonds.jpg",
+      "sha256": "a59fd0537401fb30ff144ea298be28a3c9bbc3685d271d6247604939d3989497"
+    },
+    {
+      "source_filename": "Soft.png",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/floral.png",
+      "sha256": "573c3907368fc0f7c53a5c6a2d5951aa715d54b627106ad22afcc2ec3d240d49"
+    },
+    {
+      "source_filename": "Soft.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/floral.svg",
+      "sha256": "b28977b8bad57d7a5dc4c3f50d0996802cac57c3b18cec7e1e313f6423a952c1"
+    },
+    {
+      "source_filename": "Fresh.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/piney.svg",
+      "sha256": "75e66d5f78cd99c10a8a85c2e4b73f1d9a6941c67a6a6feb3d09742e1f7f0ae0"
+    },
+    {
+      "source_filename": "Fresh.png",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/piney.png",
+      "sha256": "11eb7726018601e66f7234ab03ba833bab5b4c242c621f73733a152904fb05a7"
+    },
+    {
+      "source_filename": "Sweet.png",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/fruity.png",
+      "sha256": "50a455488b6b89fb00032dc1921567073953783c06c63bf2f9bd531a58e0dcf1"
+    },
+    {
+      "source_filename": "Sweet.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/fruity.svg",
+      "sha256": "c982a3cad64c9a6ff2c46d460c9f2c4288d3099bedcdd3b9c3a7fb7ff1a58c82"
+    },
+    {
+      "source_filename": "Bright.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/citrus.svg",
+      "sha256": "ce862bf3879195c6b28465ef49c45967b7cdcd024539b7f9334cfc3820a70f65"
+    },
+    {
+      "source_filename": "Bright.png",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/citrus.png",
+      "sha256": "d204c980de4f505838b79f22ee2aa874d1c23aee423f0f245d974ebcefb280d2"
+    },
+    {
+      "source_filename": "Creamy.png",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/dessert.png",
+      "sha256": "74de0da23c87f2231ac25d16a786c8afec290a5b73f30f0035be7b493a06b747"
+    },
+    {
+      "source_filename": "Creamy.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/dessert.svg",
+      "sha256": "52b90233e14bd96991e73e1240287a82312e72e4fe82f70d8c5a7745d111b38d"
+    },
+    {
+      "source_filename": "Woody.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/herbal.svg",
+      "sha256": "d523ff018aaa4e8db3dca996424861766798494283603d0c1f9884d656b5bc02"
+    },
+    {
+      "source_filename": "Woody.png",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/herbal.png",
+      "sha256": "760f5fbe5eb3a43a81013e91ffba62db5b7750dc3c63b50bd52a872c0e7b1e86"
+    },
+    {
+      "source_filename": "Dank.png",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/earthy.png",
+      "sha256": "81a3e670c7b429c2f5bdcff1c6e2e99cf80b55d1fe72c494f4e94a576add9a74"
+    },
+    {
+      "source_filename": "Dank.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/earthy.svg",
+      "sha256": "09fee45d6573ac5cfd743385ebafed74c39cddba0c5cd7be8d37609e29adc086"
+    },
+    {
+      "source_filename": "Fuel.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/gas.svg",
+      "sha256": "0628b07175ea4aa0963f8192a9776a48a3c657ecf6632a831348b3c9a0ff2fe6"
+    },
+    {
+      "source_filename": "Fuel.png",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/gas.png",
+      "sha256": "46494b94c4a077e01ae6e0e59ed51c6025fe07bf92a2243e85333289956526fa"
+    },
+    {
+      "source_filename": "Tangy.png",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/tropical.png",
+      "sha256": "6a2c56ecf76cbea57737bdeef612dd04f372b1e941590331d6aa32313fb8e633"
+    },
+    {
+      "source_filename": "Tangy.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/tropical.svg",
+      "sha256": "fe49949d82ba43705fad1ffa32fdef4954170180f22c275e401708f97b825afb"
+    },
+    {
+      "source_filename": "Warm.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/spicy.svg",
+      "sha256": "3607902f511859d848a82439f5057b725d6dde8b19be45c9d4445d9fce7a57eb"
+    },
+    {
+      "source_filename": "Warm.png",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/profiles/spicy.png",
+      "sha256": "1c0041c1ee66e2e157834f946a50364e60efa9c2bac468bd05df85f863e8addc"
+    },
+    {
+      "source_filename": "Fingerprint ID.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/atoms/fingerprint-sheet.svg",
+      "sha256": "d341a56e2e02ac24fe3f5ff5e7560ccb1498ceb613e40e8823c6a55384e623fa"
+    },
+    {
+      "source_filename": "Soft.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/atoms/floral.svg",
+      "sha256": "867af64d62fbd75aa14f06519b62c9fbac8314b348088f001659dc985f28861e"
+    },
+    {
+      "source_filename": "Fresh.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/atoms/piney.svg",
+      "sha256": "35baf903d45beccabec01764cf12284eb88369006dd7707b418c0187debd7929"
+    },
+    {
+      "source_filename": "Sweet.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/atoms/fruity.svg",
+      "sha256": "e1b96f2c4e0c836e08482c87e899ad9df150a67e8d604f05673ad5035d9ce101"
+    },
+    {
+      "source_filename": "Bright.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/atoms/citrus.svg",
+      "sha256": "b583a63c1e547a615698b1b894986cf27b45b345a9d4f7645a1fd9863b0da3e1"
+    },
+    {
+      "source_filename": "Woody.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/atoms/herbal.svg",
+      "sha256": "d39a50e30f0fc29b4c1d5663dff2c3786c8d9c3e1b6105b4b8ef6bcbe9043bd9"
+    },
+    {
+      "source_filename": "Dank.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/atoms/earthy.svg",
+      "sha256": "3abad0419916c22d8e59c964a0f819142f785a7dbb9571ed0a6261c0692b6dff"
+    },
+    {
+      "source_filename": "Fuel.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/atoms/gas.svg",
+      "sha256": "bcbde0ad60653bb3b68cc032fb1de13f761948b99a8995971fefa97bef1f92a6"
+    },
+    {
+      "source_filename": "Tangy.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/atoms/tropical.svg",
+      "sha256": "69aaef09af527a28348424fafa2010dc06fe4430c683e48806c2c7f43ff96940"
+    },
+    {
+      "source_filename": "Warm.svg",
+      "source_group": "supplied-artwork",
+      "published_path": "public/assets/atoms/spicy.svg",
+      "sha256": "445d2971b95689cfa48ce47f3680aa824072c3f7c92c1351a1b528fa45c8f52f"
+    },
+    {
+      "source_filename": "Pasted text.txt",
+      "source_group": "prototype",
+      "published_path": null,
+      "sha256": "c9fd4bc6908094153b980724dd2b9726d3a3f4070eb06b5ff6e747f67ade547c"
+    },
+    {
+      "source_filename": "Pasted text.txt",
+      "source_group": "prototype",
+      "published_path": null,
+      "sha256": "095683fdf512b43b0f0fdc6e27c1eb7f9400f0a7d770b0da898f4b688e7db865"
+    },
+    {
+      "source_filename": "flower-spectrum-case-study.pdf",
+      "source_group": "supplied-artwork",
+      "published_path": null,
+      "sha256": "c0ebc178867f23b03d964cf4f58d205ab90a798332f9072d761ac03b09d40bdb"
+    }
+  ]
+}
