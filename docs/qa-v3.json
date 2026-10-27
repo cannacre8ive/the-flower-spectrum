@@ -1,0 +1,20 @@
+{
+  "base": "http://localhost:4173",
+  "checks": [
+    "Four tabs show one panel at a time; explorer is the default",
+    "Arrow, Home and End navigation with one tab stop and matching ARIA state",
+    "Explorer mode, profile selection and custom composition survive tab changes",
+    "Profile-to-terpene and terpene-to-profile links activate the correct workspace",
+    "Library search persists; all 38 cards, collection filters, arrows and mouse drag work",
+    "Social and buyer selections synchronize in both directions, retaining farm personalization",
+    "Selected social format persists; native SVG/PNG downloads and artwork inspector work",
+    "Buyer disclosure and personalized printable export remain functional",
+    "Browser history and fresh deep links, including previous URLs, select the right panel",
+    "Design anatomy and all eight original cards remain available in the accessible About dialog",
+    "All four tabs fit 320,390,768,1440px in both themes; light preference survives reload",
+    "Reduced-motion preference disables panel animation",
+    "No browser exceptions or failed requests"
+  ],
+  "errors": [],
+  "failed": []
+}

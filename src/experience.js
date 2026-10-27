@@ -23,8 +23,8 @@ function renderLibrary(){const query=$('#terp-search').value.toLowerCase().trim(
 $('#terp-search').addEventListener('input',renderLibrary);$('#terp-profile').addEventListener('change',renderLibrary);
 $$('[data-tier]').forEach(b=>b.addEventListener('click',()=>{tier=b.dataset.tier;$$('[data-tier]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));renderLibrary();}));
 $('#clear-search').addEventListener('click',()=>{tier='all';$('#terp-search').value='';$('#terp-profile').value='all';$$('[data-tier]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.tier==='all')));renderLibrary();});
-function openTerpene(key){const t=LIBRARY.find(t=>t.key===key);if(!t)return;tier='all';$('#terp-profile').value='all';$('#terp-search').value=t.label;$$('[data-tier]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.tier==='all')));renderLibrary();$('#terpenes').scrollIntoView({behavior:reduced()?'instant':'smooth'});$('#terp-rail details').open=true;}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-open-terp]');if(b)openTerpene(b.dataset.openTerp);const p=e.target.closest('[data-show-profile]');if(p){document.dispatchEvent(new CustomEvent('fs-profile',{detail:Number(p.dataset.showProfile)}));$('#profiles').scrollIntoView({behavior:reduced()?'instant':'smooth'});}});
+function openTerpene(key){const t=LIBRARY.find(t=>t.key===key);if(!t)return;tier='all';$('#terp-profile').value='all';$('#terp-search').value=t.label;$$('[data-tier]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.tier==='all')));renderLibrary();document.dispatchEvent(new CustomEvent('fs-navigate',{detail:'terpenes'}));$('#terp-rail details').open=true;}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-open-terp]');if(b)openTerpene(b.dataset.openTerp);const p=e.target.closest('[data-show-profile]');if(p){document.dispatchEvent(new CustomEvent('fs-profile',{detail:Number(p.dataset.showProfile)}));document.dispatchEvent(new CustomEvent('fs-navigate',{detail:'spectrum'}));}});
 renderLibrary();
 function scrollRail(id,d){const r=document.getElementById(id);r.scrollBy({left:d*(r.firstElementChild?.getBoundingClientRect().width+20||300),behavior:reduced()?'instant':'smooth'});}
 $$('[data-rail-prev]').forEach(b=>b.addEventListener('click',()=>scrollRail(b.dataset.railPrev,-1)));$$('[data-rail-next]').forEach(b=>b.addEventListener('click',()=>scrollRail(b.dataset.railNext,1)));
@@ -40,16 +40,11 @@ $$('[data-social-format]').forEach(b=>b.addEventListener('click',()=>{socialInde
 $('#studio-strain').addEventListener('change',e=>{chosen=STRAINS.find(s=>s.id===e.target.value);buyer=chosen;renderSocial();renderBuyer();});
 ['studio-farm','studio-handle'].forEach(id=>$('#'+id).addEventListener('input',()=>{renderSocial(false);renderBuyer();}));
 for(const format of ['svg','png'])$('#social-'+format).addEventListener('click',async e=>{const b=e.currentTarget,old=b.innerHTML;b.disabled=true;b.textContent='Preparing…';try{await saveSocial(artwork(),format,`flower-spectrum-${chosen.id}-${FORMATS[socialIndex].id}`);notify(`${format.toUpperCase()} saved at ${FORMATS[socialIndex].size.join(' × ')}.`);}catch{notify('Export could not finish. Please try again.');}finally{b.disabled=false;b.innerHTML=old;}});
-$('#hero-social').innerHTML=socialSVG('highlight',chosen,{farm:'Ideal Cannabis',handle:'@idealcannabis'});
 $('#buyer-strains').innerHTML=STRAINS.map(s=>`<button data-buyer="${s.id}" aria-pressed="${s.id===buyer.id}">${s.name}</button>`).join('');
 function renderBuyer(){ $('#buyer-pdf').href='/assets/buyer-sheets/'+buyer.id+'.pdf';$('#buyer-pdf').download='flower-spectrum-'+buyer.id+'-chemovar.pdf';$('#buyer-sheet').innerHTML=buyerSheet(buyer,farm());$$('[data-buyer]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.buyer===buyer.id))); }
-$$('[data-buyer]').forEach(b=>b.addEventListener('click',()=>{buyer=STRAINS.find(s=>s.id===b.dataset.buyer);renderBuyer();animateSwap($('#buyer-sheet'));}));
+$$('[data-buyer]').forEach(b=>b.addEventListener('click',()=>{buyer=STRAINS.find(s=>s.id===b.dataset.buyer);chosen=buyer;$('#studio-strain').value=chosen.id;renderSocial(false);renderBuyer();animateSwap($('#buyer-sheet'));}));
 $('#buyer-download').addEventListener('click',()=>{saveFile(buyerDocument(buyer,farm()),`flower-spectrum-${buyer.id}-buyer-sheet.html`,'text/html');notify('Buyer sheet saved. Open it to print or save as PDF.');});
 renderSocial(false);renderBuyer();
-const links=$$('.site-header nav a'),sections=links.map(a=>document.querySelector(a.getAttribute('href')));
-const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting)links.forEach(a=>a.classList.toggle('current',a.hash==='#'+entry.target.id));});},{rootMargin:'-20% 0px -55% 0px'});sections.forEach(s=>observer.observe(s));
-if(!reduced()){$('#hero-fingerprint').animate([{opacity:0,transform:'rotate(-18deg) scale(.85)'},{opacity:1,transform:'rotate(0) scale(1)'}],{duration:1000,easing:'cubic-bezier(.2,.7,.2,1)'});$('#hero-social').animate([{opacity:0,transform:'translateY(35px)'},{opacity:1,transform:'translateY(0)'}],{duration:850,delay:150,fill:'backwards',easing:'cubic-bezier(.2,.7,.2,1)'});}
-
 const designDialog=$('#design-dialog');
 function designZoom(full){$('#design-art').style.width=full?'1080px':'100%';$('#design-full').setAttribute('aria-pressed',String(full));$('#design-fit').setAttribute('aria-pressed',String(!full));}
 $('#social-expand').addEventListener('click',()=>{$('#design-art').innerHTML=artwork();$('#design-dialog-title').textContent=FORMATS[socialIndex].title;designZoom(false);designDialog.showModal();document.body.style.overflow='hidden';});

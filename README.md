@@ -4,9 +4,13 @@ A language for what you smell. An interactive portfolio website showcasing Spenc
 
 **[Explore the live site](https://the-flower-spectrum.vercel.app)** · **[GitHub](https://github.com/cannacre8ive/the-flower-spectrum)**
 
-![The Flower Spectrum website](docs/v2-hero.png)
+![The Flower Spectrum website](docs/v3-workspace.png)
 
 ## The experience
+
+Four connected tabs replace the long scrolling showcase: Spectrum explorer, Terpene library, Social studio, and Buyer sheets. One panel is visible at a time, with restrained transitions, keyboard navigation, shareable URLs, and browser history. Each tool preserves its state when switching tabs. Social and buyer selections synchronize in both directions. The explorer includes profile browsing and fingerprint composition as two modes.
+
+The original warm ink palette, Newsreader wordmark, and ten-color strip lead the interface. Design anatomy and photographic originals live in the **About the design** dialog.
 
 - **Interactive spectrum:** ten clickable and keyboard-accessible sectors, fixed colors and positions, expandable explanations, associated terpene cards, and swipe navigation.
 - **Education library:** all 38 source terpene cards, with search, profile filters, primary/key-impact/supporting collections, expandable details, drag/swipe browsing, and the original education PDFs.
@@ -16,7 +20,7 @@ A language for what you smell. An interactive portfolio website showcasing Spenc
 - **Fingerprint lab:** three historical sample presets, six adjustable terpene values, synchronized radial fingerprints, identity cards, and spectrum strips.
 - **Editable exports:** downloadable standalone SVGs for each preview format, carrying the sample/illustrative distinction.
 - **System anatomy:** a closer look at fingerprints, strips, palette, typography, and supplied profile-card artwork.
-- **Specimen archive:** eight original cards with aroma filters, accessible detail dialogs, and original-image downloads. The supplied JPEGs are 398 × 594 pixels and are displayed at up to 199 CSS pixels wide for 2x pixel density; they are not upscaled. Hero and generated cards use live vectors and text instead.
+- **Specimen archive:** eight original cards with aroma filters, accessible detail dialogs, and original-image downloads. The supplied JPEGs are 398 × 594 pixels and are displayed at up to 199 CSS pixels wide for 2x pixel density; they are not upscaled. Fingerprints and generated cards use live vectors and text.
 
 ## Run locally
 
@@ -34,8 +38,10 @@ Vercel builds with `npm run build` and serves `dist/`. GitHub and Vercel use the
 
 | File | Purpose |
 |---|---|
-| `index.html` | Page narrative, sections, metadata |
-| `src/style.css` | Visual tokens, layout, responsive states |
+| `index.html` | Workspace shell, four panels, dialogs, metadata |
+| `src/style.css` | Base component styles |
+| `src/workspace.css` | Focused tab layout, source palette, compact responsive styles |
+| `src/workspace.js` | Accessible tabs, routing, history, transitions, design dialog |
 | `src/content.js` | Profile copy and original card captions |
 | `src/engine.js` | Classification rules and historical sample panels extracted from the supplied Social Kit prototype |
 | `src/visuals.js` | Fixed-sector fingerprint, strip, illustrative signatures, standalone SVG export |
@@ -67,9 +73,9 @@ The new showcase is isolated from prior Flower Spectrum repositories and deploym
 ## Validation
 
 - Nine automated tests cover known sample outputs, empty states, strip rules across deterministic randomized blends, reference signatures, portable exports, 38 unique educational entries, 18 social sample/format combinations, and complete buyer panels.
-- Browser checks cover all profiles, presets, slider updates, three downloads, clear/reset, all design tabs, keyboard interactions, filters, dialog focus restoration, deep links, reduced motion, and image loading.
+- The current browser suite checks all four tab panels, keyboard navigation, preserved tool state, cross-tool links, shared strain selections, SVG/PNG/HTML exports, browser history, old and new deep links, original artwork, dialog focus, both themes, and reduced motion. Results: `docs/qa-v3.json`. Earlier suites remain as historical validation of the source components.
 - Layouts checked at 320, 390, 768, and 1440 pixels with no horizontal overflow.
-- Screenshots and the latest browser check result are in `docs/`. To rerun browser checks, install Playwright as a local test tool, start the dev server, then run `node scripts/browser-qa.cjs`. Set `SITE_URL` for production checks and `CHROME_PATH` to use a local Chrome executable.
+- Screenshots and the latest browser check result are in `docs/`. To rerun browser checks, install Playwright as a local test tool, start the dev server, then run `node scripts/browser-qa-v3.cjs`. Set `SITE_URL` for production checks and `CHROME_PATH` to use a local Chrome executable.
 
 ## Credits and rights
 

@@ -5,9 +5,6 @@ import { TERPENES as LIBRARY } from './education-data.js';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const km=STRAINS.find(s=>s.id==='km'),kmClass=classify(km.values);
 const isDark=()=>document.documentElement.dataset.theme!=='light';
-$('#hero-fingerprint').innerHTML=fingerprint(kmClass,{dark:isDark()});
-$('#hero-strip').innerHTML=strip(kmClass);
-$('#spectrum-ribbon').innerHTML=PROFILES.map((p,i)=>`<a href="#profiles" style="background:${p.color}" data-profile-link="${i}" aria-label="Explore ${p.label}"></a>`).join('');
 $('#profile-picker').innerHTML=PROFILES.map((p,i)=>`<button data-profile="${i}" aria-pressed="${i===2}" aria-label="${p.label}" style="--p-color:${p.color}"><span class="profile-dot" aria-hidden="true"></span>${profileContent[i].name}</button>`).join('');
 let profileIndex=2;
 function showProfile(i){
@@ -17,7 +14,7 @@ function showProfile(i){
  $('#profile-fingerprint').innerHTML=fingerprint(illustrativeProfile(i),{labels:true,dark:isDark(),interactive:true,active:i});
  const related=LIBRARY.filter(t=>t.profile===p.key||(t.also||[]).includes(p.key));
  const chip=t=>`<button data-open-terp="${t.key}">${t.label} ↗</button>`;
- $('#profile-description').innerHTML=`<p class="profile-pair">${text.name} / ${text.pair}</p><h3>${text.name}.</h3><p class="sensory">${text.notes}</p><p class="profile-prose">${text.description}</p><div class="profile-details"><span>Explore the associated terpenes</span><div class="profile-terps">${related.slice(0,4).map(chip).join('')}</div></div><details class="profile-extra"><summary>Inside this part of the spectrum <span>+</span></summary><p>This sector always sits in position ${i+1} of 10. ${text.drivers} are the source system’s signature associations. Select a terpene to open its educational card.</p>${related.length>4?`<div class="profile-terps">${related.slice(4).map(chip).join('')}</div>`:''}</details>`;
+ $('#profile-description').innerHTML=`<p class="profile-pair">Profile ${String(i+1).padStart(2,'0')} / 10</p><h3>${text.name} <em>/ ${text.pair}</em></h3><p class="sensory">${text.notes}</p><p class="profile-prose">${text.description}</p><div class="profile-details"><span>Explore the associated terpenes</span><div class="profile-terps">${related.slice(0,4).map(chip).join('')}</div></div><details class="profile-extra"><summary>Inside this part of the spectrum <span>+</span></summary><p>This sector always sits in position ${i+1} of 10. ${text.drivers} are the source system’s signature associations. Select a terpene to open its educational card.</p>${related.length>4?`<div class="profile-terps">${related.slice(4).map(chip).join('')}</div>`:''}</details>`;
  $('#profile-position').textContent=(i+1)+' / 10';
  if(!matchMedia('(prefers-reduced-motion: reduce)').matches)$('#profile-description').animate([{opacity:.2,transform:'translateX(14px)'},{opacity:1,transform:'translateX(0)'}],{duration:280,easing:'ease-out'});
  $('#profile-index').textContent=String(i+1).padStart(2,'0');
@@ -68,7 +65,7 @@ const components={
  type:{art:'<div class="type-demo"><p class="display-type">Natural character.<br>Clear information.</p><p class="body-type">Newsreader / DM Sans</p><p class="small-type">Aroma profile · Sample identity · Supporting detail</p></div>',title:'Organic meets precise.',copy:'Newsreader brings an editorial, botanical character to the names. DM Sans keeps controls, labels, and supporting details clear. Contrast comes from scale and role.'},
  card:{art:'<img class="source-profile-card" src="/assets/profiles/citrus.svg" width="495" height="458" alt="Original Citrus / Bright profile card with fingerprint, sensory notes and supporting details">',title:'A reusable unit of meaning.',copy:'The original profile card brings the ingredients together: name, sensory description, fingerprint, and color. Source copy is preserved here as design artwork; it is not a verified effects claim.'}
 };
-function showComponent(key){const c=components[key];$$('[data-component]').forEach(b=>{const active=b.dataset.component===key;b.setAttribute('aria-selected',active);b.tabIndex=active?0:-1;});$('#system-panel').setAttribute('aria-labelledby',`tab-${key}`);$('#system-panel').innerHTML=`<div class="component-art">${c.art}</div><div class="component-caption"><h3>${c.title}</h3><p>${c.copy}</p></div>`;}
+function showComponent(key){const c=components[key];if(key==='fingerprint')c.art=`${fingerprint(kmClass,{dark:isDark()})}<div class="scale-demo">${fingerprint(classify(STRAINS[0].values),{dark:isDark()})}${fingerprint(classify(STRAINS[1].values),{dark:isDark()})}</div>`;$$('[data-component]').forEach(b=>{const active=b.dataset.component===key;b.setAttribute('aria-selected',active);b.tabIndex=active?0:-1;});$('#system-panel').setAttribute('aria-labelledby',`tab-${key}`);$('#system-panel').innerHTML=`<div class="component-art">${c.art}</div><div class="component-caption"><h3>${c.title}</h3><p>${c.copy}</p></div>`;}
 $$('[data-component]').forEach(b=>b.addEventListener('click',()=>showComponent(b.dataset.component)));
 $('.system-tabs').addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(e.key))return;e.preventDefault();const bs=$$('[data-component]'),i=bs.indexOf(document.activeElement),next=e.key==='Home'?0:e.key==='End'?4:(i+(['ArrowRight','ArrowDown'].includes(e.key)?1:4))%5;bs[next].focus();showComponent(bs[next].dataset.component);});
 showComponent('fingerprint');
@@ -77,7 +74,7 @@ $$('[data-filter]').forEach(b=>b.addEventListener('click',()=>{const filter=b.da
 const dialog=$('#card-dialog');
 $$('[data-card]').forEach(b=>b.addEventListener('click',()=>{const c=cards.find(c=>c.id===b.dataset.card);$('#dialog-content').innerHTML=`<img src="/assets/cards/${c.id}.jpg" width="398" height="594" alt="${c.name} original specimen card"><div><span class="dialog-label">${c.source}</span><h3 id="dialog-title">${c.name}</h3><p>${c.profile}</p><p>${c.note}</p><p>Original artwork is preserved as supplied. The interactive lab is a separate demonstration of the underlying design rules.</p><a class="button outline" href="/assets/cards/${c.id}.jpg" download="flower-spectrum-${c.id}.jpg">Save original artwork <span aria-hidden="true">↓</span></a></div>`;dialog.showModal();document.body.style.overflow='hidden';}));
 $('#close-dialog').addEventListener('click',()=>dialog.close());
-dialog.addEventListener('close',()=>document.body.style.overflow='');
+dialog.addEventListener('close',()=>document.body.style.overflow=document.querySelector('dialog[open]')?'hidden':'');
 dialog.addEventListener('click',e=>{const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();});
 
-document.addEventListener('fs-theme',()=>{renderLab();$('#hero-fingerprint').innerHTML=fingerprint(kmClass,{dark:isDark()});$('#profile-fingerprint').innerHTML=fingerprint(illustrativeProfile(profileIndex),{labels:true,dark:isDark(),interactive:true,active:profileIndex});});
+document.addEventListener('fs-theme',()=>{renderLab();showComponent(document.querySelector('[data-component][aria-selected=true]').dataset.component);$('#profile-fingerprint').innerHTML=fingerprint(illustrativeProfile(profileIndex),{labels:true,dark:isDark(),interactive:true,active:profileIndex});});
