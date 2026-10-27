@@ -38,3 +38,11 @@ Gallery: preserve the original eight pieces as an inspectable collection.
 Avoided a generic product-dashboard treatment. The key visual is the actual ten-sector identity device, not decorative charts or a stock cannabis illustration. The supplied botanical palette, serif typography, photography, and proportional strips establish continuity with the source material.
 
 Color is redundant with labels and fixed positions. Interactive elements use visible focus; profile selectors and system tabs support arrows; native dialogs trap focus and restore it. Motion is limited to user feedback and disabled under reduced motion.
+
+## Expanded experience, October 27, 2026
+
+The revision makes dark mode the default and offers a persistent light preference. A ten-color strip sits beside the Newsreader wordmark, replacing the unrelated star symbol. The low-resolution photographic source cards remain unchanged in a collapsible archive at pixel-appropriate display sizes; live SVG and HTML now carry the hero, social artwork, and buyer material.
+
+The page connects three useful workflows: explore the meaning of a spectrum sector, learn about its associated terpenes, and carry the same strain identity into D2C social content or a detailed B2B chemovar sheet. The 38-card library is searchable and draggable. Six social formats use the supplied Social Kit's structure and data, with clearer source status. Buyer sheets expose lineage, identifiers, reported chemistry, sensory architecture, complete analyte panels, and explicit gaps in commercial data.
+
+Motion is purposeful: a single hero entrance, profile and preview transitions, and animated disclosure height. Next/previous controls supplement swipe and drag, keyboard focus remains available, and reduced-motion preferences bypass animation.

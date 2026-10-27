@@ -1,0 +1,19 @@
+{
+  "base": "http://localhost:4173",
+  "checks": [
+    "Dark default, persistent light preference, 10-color strip wordmark",
+    "All 10 spectrum sectors are keyboard-interactive and update profile detail",
+    "Profile expansion and linked terpene education",
+    "38-card library, exact 9/7/22 collections, search, profile filter, empty/reset",
+    "Animated educational disclosures, rail arrows and actual mouse dragging",
+    "All six social designs export real PNGs at native dimensions and self-contained SVGs",
+    "Social personalization, previous/next, swipe, full-size inspection and Escape",
+    "Three buyer sheets: exact 13/17/17 analyte rows, disclosure and complete editable print exports",
+    "Both themes at 320,390,768,1440px with no horizontal page overflow",
+    "Original 398px photographic cards render at <=199 CSS pixels for 2x density",
+    "Reduced motion respected",
+    "Fresh buyer deep link, no browser exceptions or failed requests"
+  ],
+  "errors": [],
+  "failed": []
+}

@@ -1,0 +1,60 @@
+import {PROFILES,STRAINS,classify} from './engine.js';
+import {TERPENES as LIBRARY} from './education-data.js';
+import {profileContent} from './content.js';
+import {escapeXML as esc} from './visuals.js';
+import {FORMATS,socialSVG,saveSocial,saveFile} from './social-designs.js';
+import {buyerSheet,buyerDocument} from './buyer-sheet.js';
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const reduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+export function animateSwap(el){if(!reduced())el.animate([{opacity:.35,transform:'translateY(10px)'},{opacity:1,transform:'translateY(0)'}],{duration:300,easing:'cubic-bezier(.2,.7,.3,1)'});}
+function notify(msg){$('#toast').textContent=msg;$('#toast').classList.add('visible');setTimeout(()=>$('#toast').classList.remove('visible'),3500);}
+function setTheme(value){document.documentElement.dataset.theme=value;$('#theme-toggle').textContent=value==='dark'?'Light mode ◐':'Dark mode ◑';$('#theme-toggle').setAttribute('aria-pressed',String(value==='light'));$('#theme-toggle').setAttribute('aria-label',value==='dark'?'Turn on light mode':'Turn on dark mode');try{localStorage.setItem('fs-theme',value)}catch{}document.dispatchEvent(new CustomEvent('fs-theme'));}
+$('#theme-toggle').addEventListener('click',()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark'));setTheme(document.documentElement.dataset.theme||'dark');
+const keyImpact=new Set(['bisabolol','valencene','nerolidol','guaiol','terpineol','caryophyllene_oxide','pcymene']);
+const group=t=>t.tier==='primary'?'primary':keyImpact.has(t.key)?'key':'supporting';
+const groupLabel=t=>({primary:'Primary driver',key:'Key impact',supporting:'Supporting note'}[group(t)]);
+$('#terp-profile').innerHTML+=[...PROFILES].map(p=>`<option value="${p.key}">${p.label}</option>`).join('');
+let tier='all';
+function renderLibrary(){const query=$('#terp-search').value.toLowerCase().trim(),profile=$('#terp-profile').value;
+ const matches=LIBRARY.filter(t=>(tier==='all'||group(t)===tier)&&(profile==='all'||t.profile===profile||(t.also||[]).includes(profile))&&[t.label,t.aroma,PROFILES.find(p=>p.key===t.profile).label].join(' ').toLowerCase().includes(query));
+ $('#terp-results').textContent=`${matches.length} educational ${matches.length===1?'card':'cards'}`;$('#terp-empty').hidden=matches.length>0;
+ $('#terp-rail').innerHTML=matches.map(t=>{const p=PROFILES.find(p=>p.key===t.profile);return `<article class="terp-card" style="--card-color:${p.color}"><div class="terp-card-top"><span>${groupLabel(t)}</span><span>${t.abbr}</span></div><h3>${esc(t.label)}</h3><p class="terp-aroma">${esc(t.aroma)}</p><button class="terp-profile-link" data-show-profile="${PROFILES.indexOf(p)}"><i></i>${p.label} <span>↗</span></button><details><summary>Explore this terpene <span>+</span></summary><p>${esc(t.impact)}</p><h4>Found alongside</h4><p>${t.foundWith.map(esc).join(' · ')}</p>${t.also?.length?`<h4>Also supports</h4><p>${t.also.map(key=>PROFILES.find(p=>p.key===key).label).join(' · ')}</p>`:''}</details><div class="terp-card-foot">Flower Spectrum / Education library</div></article>`;}).join('');$('#terp-rail').scrollTo({left:0});
+}
+$('#terp-search').addEventListener('input',renderLibrary);$('#terp-profile').addEventListener('change',renderLibrary);
+$$('[data-tier]').forEach(b=>b.addEventListener('click',()=>{tier=b.dataset.tier;$$('[data-tier]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));renderLibrary();}));
+$('#clear-search').addEventListener('click',()=>{tier='all';$('#terp-search').value='';$('#terp-profile').value='all';$$('[data-tier]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.tier==='all')));renderLibrary();});
+function openTerpene(key){const t=LIBRARY.find(t=>t.key===key);if(!t)return;tier='all';$('#terp-profile').value='all';$('#terp-search').value=t.label;$$('[data-tier]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.tier==='all')));renderLibrary();$('#terpenes').scrollIntoView({behavior:reduced()?'instant':'smooth'});$('#terp-rail details').open=true;}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-open-terp]');if(b)openTerpene(b.dataset.openTerp);const p=e.target.closest('[data-show-profile]');if(p){document.dispatchEvent(new CustomEvent('fs-profile',{detail:Number(p.dataset.showProfile)}));$('#profiles').scrollIntoView({behavior:reduced()?'instant':'smooth'});}});
+renderLibrary();
+function scrollRail(id,d){const r=document.getElementById(id);r.scrollBy({left:d*(r.firstElementChild?.getBoundingClientRect().width+20||300),behavior:reduced()?'instant':'smooth'});}
+$$('[data-rail-prev]').forEach(b=>b.addEventListener('click',()=>scrollRail(b.dataset.railPrev,-1)));$$('[data-rail-next]').forEach(b=>b.addEventListener('click',()=>scrollRail(b.dataset.railNext,1)));
+$$('.drag-rail').forEach(rail=>{let start=null,moved=false;rail.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.target.closest('button,input,a,summary'))return;start={x:e.clientX,left:rail.scrollLeft};moved=false;});rail.addEventListener('pointermove',e=>{if(!start||e.buttons!==1)return;const d=e.clientX-start.x;if(Math.abs(d)>5){moved=true;rail.classList.add('dragging');rail.scrollLeft=start.left-d;}});const end=()=>{start=null;rail.classList.remove('dragging');};window.addEventListener('pointerup',end);rail.addEventListener('click',e=>{if(moved){e.preventDefault();moved=false;}},true);rail.addEventListener('keydown',e=>{if(e.target===rail&&['ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();scrollRail(rail.id,e.key==='ArrowRight'?1:-1);}});});
+export function swipe(el,next,prev){let start;el.addEventListener('pointerdown',e=>{if(e.target.closest('button,a,input,select,summary,[role=button]'))return;start={x:e.clientX,y:e.clientY};});el.addEventListener('pointerup',e=>{if(!start)return;const dx=e.clientX-start.x,dy=e.clientY-start.y;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.4){dx<0?next():prev();}start=null;});el.addEventListener('pointercancel',()=>start=null);}
+let socialIndex=0,chosen=STRAINS.find(s=>s.id==='km'),buyer=chosen;
+const farm=()=>$('#studio-farm').value.trim()||'Your farm',handle=()=>$('#studio-handle').value.trim()||'@yourfarm';
+function artwork(){const c=classify(chosen.values),i=PROFILES.findIndex(p=>p.key===c.ranked[0].key);return socialSVG(FORMATS[socialIndex].id,chosen,{farm:farm(),handle:handle(),other:STRAINS.find(s=>s.id!==chosen.id),profileCopy:profileContent[i]});}
+$('#social-formats').innerHTML=FORMATS.map((f,i)=>`<button data-social-format="${i}" aria-pressed="${i===0}"><span>${String(i+1).padStart(2,'0')}</span>${f.title}<small>${f.shape.split(' / ')[0]}</small></button>`).join('');
+function renderSocial(motion=true){const f=FORMATS[socialIndex];$('#social-preview').innerHTML=artwork();$('#social-preview').dataset.shape=f.id;$('#social-title').textContent=f.title;$('#social-description').textContent=f.description;$('#social-audience').textContent=f.role;$('#social-format').textContent=f.size.join(' × ')+' / '+f.shape.split(' / ')[1];$('#social-position').textContent=(socialIndex+1)+' / 6';$$('[data-social-format]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.socialFormat)===socialIndex)));if(motion)animateSwap($('#social-preview'));}
+function stepSocial(d){socialIndex=(socialIndex+d+FORMATS.length)%FORMATS.length;renderSocial();}
+$$('[data-social-format]').forEach(b=>b.addEventListener('click',()=>{socialIndex=Number(b.dataset.socialFormat);renderSocial();}));$('#social-next').addEventListener('click',()=>stepSocial(1));$('#social-prev').addEventListener('click',()=>stepSocial(-1));swipe($('#social-preview'),()=>stepSocial(1),()=>stepSocial(-1));
+$('#studio-strain').addEventListener('change',e=>{chosen=STRAINS.find(s=>s.id===e.target.value);buyer=chosen;renderSocial();renderBuyer();});
+['studio-farm','studio-handle'].forEach(id=>$('#'+id).addEventListener('input',()=>{renderSocial(false);renderBuyer();}));
+for(const format of ['svg','png'])$('#social-'+format).addEventListener('click',async e=>{const b=e.currentTarget,old=b.innerHTML;b.disabled=true;b.textContent='Preparing…';try{await saveSocial(artwork(),format,`flower-spectrum-${chosen.id}-${FORMATS[socialIndex].id}`);notify(`${format.toUpperCase()} saved at ${FORMATS[socialIndex].size.join(' × ')}.`);}catch{notify('Export could not finish. Please try again.');}finally{b.disabled=false;b.innerHTML=old;}});
+$('#hero-social').innerHTML=socialSVG('highlight',chosen,{farm:'Ideal Cannabis',handle:'@idealcannabis'});
+$('#buyer-strains').innerHTML=STRAINS.map(s=>`<button data-buyer="${s.id}" aria-pressed="${s.id===buyer.id}">${s.name}</button>`).join('');
+function renderBuyer(){ $('#buyer-pdf').href='/assets/buyer-sheets/'+buyer.id+'.pdf';$('#buyer-pdf').download='flower-spectrum-'+buyer.id+'-chemovar.pdf';$('#buyer-sheet').innerHTML=buyerSheet(buyer,farm());$$('[data-buyer]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.buyer===buyer.id))); }
+$$('[data-buyer]').forEach(b=>b.addEventListener('click',()=>{buyer=STRAINS.find(s=>s.id===b.dataset.buyer);renderBuyer();animateSwap($('#buyer-sheet'));}));
+$('#buyer-download').addEventListener('click',()=>{saveFile(buyerDocument(buyer,farm()),`flower-spectrum-${buyer.id}-buyer-sheet.html`,'text/html');notify('Buyer sheet saved. Open it to print or save as PDF.');});
+renderSocial(false);renderBuyer();
+const links=$$('.site-header nav a'),sections=links.map(a=>document.querySelector(a.getAttribute('href')));
+const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting)links.forEach(a=>a.classList.toggle('current',a.hash==='#'+entry.target.id));});},{rootMargin:'-20% 0px -55% 0px'});sections.forEach(s=>observer.observe(s));
+if(!reduced()){$('#hero-fingerprint').animate([{opacity:0,transform:'rotate(-18deg) scale(.85)'},{opacity:1,transform:'rotate(0) scale(1)'}],{duration:1000,easing:'cubic-bezier(.2,.7,.2,1)'});$('#hero-social').animate([{opacity:0,transform:'translateY(35px)'},{opacity:1,transform:'translateY(0)'}],{duration:850,delay:150,fill:'backwards',easing:'cubic-bezier(.2,.7,.2,1)'});}
+
+const designDialog=$('#design-dialog');
+function designZoom(full){$('#design-art').style.width=full?'1080px':'100%';$('#design-full').setAttribute('aria-pressed',String(full));$('#design-fit').setAttribute('aria-pressed',String(!full));}
+$('#social-expand').addEventListener('click',()=>{$('#design-art').innerHTML=artwork();$('#design-dialog-title').textContent=FORMATS[socialIndex].title;designZoom(false);designDialog.showModal();document.body.style.overflow='hidden';});
+$('#design-fit').addEventListener('click',()=>designZoom(false));$('#design-full').addEventListener('click',()=>designZoom(true));$('#design-close').addEventListener('click',()=>designDialog.close());designDialog.addEventListener('close',()=>document.body.style.overflow='');
+designDialog.addEventListener('click',e=>{const r=designDialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)designDialog.close();});
+// Animate native disclosure height without changing keyboard semantics.
+const disclosureAnimations=new WeakMap();
+document.addEventListener('click',e=>{const summary=e.target.closest('summary');if(!summary||reduced())return;const details=summary.parentElement;if(details.tagName!=='DETAILS')return;e.preventDefault();const running=disclosureAnimations.get(details);if(running)return;const from=details.getBoundingClientRect().height,closing=details.open;if(!closing)details.open=true;const to=closing?summary.getBoundingClientRect().height:details.getBoundingClientRect().height;details.style.overflow='hidden';const animation=details.animate([{height:from+'px'},{height:to+'px'}],{duration:220,easing:'cubic-bezier(.2,.7,.3,1)'});disclosureAnimations.set(details,animation);animation.onfinish=()=>{if(closing)details.open=false;details.style.overflow='';disclosureAnimations.delete(details);};});

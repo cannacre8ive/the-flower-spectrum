@@ -4,15 +4,19 @@ A language for what you smell. An interactive portfolio website showcasing Spenc
 
 **[Explore the live site](https://the-flower-spectrum.vercel.app)** · **[GitHub](https://github.com/cannacre8ive/the-flower-spectrum)**
 
-![The Flower Spectrum website](docs/hero.png)
+![The Flower Spectrum website](docs/v2-hero.png)
 
 ## The experience
 
-- **Profile atlas:** ten aroma identities, fixed colors and positions, sensory descriptions, and illustrative signatures.
+- **Interactive spectrum:** ten clickable and keyboard-accessible sectors, fixed colors and positions, expandable explanations, associated terpene cards, and swipe navigation.
+- **Education library:** all 38 source terpene cards, with search, profile filters, primary/key-impact/supporting collections, expandable details, drag/swipe browsing, and the original education PDFs.
+- **Cultivator social studio:** six layouts from the supplied Social Kit, three strain presets, farm/handle personalization, native-size PNG and self-contained SVG export, and full-size inspection.
+- **Wholesale chemovar sheets:** all three historical sample one-pagers, including lineage, lot/sample IDs, chemistry, aroma architecture, the complete reported analyte panel, single-page sample PDFs, and editable printable HTML downloads. The PDF examples retain the original farm name; editable sheets reflect personalization.
+- **Dark-first interface:** persistent light-mode option, restrained entrance and interaction motion, animated disclosures, and reduced-motion support.
 - **Fingerprint lab:** three historical sample presets, six adjustable terpene values, synchronized radial fingerprints, identity cards, and spectrum strips.
 - **Editable exports:** downloadable standalone SVGs for each preview format, carrying the sample/illustrative distinction.
 - **System anatomy:** a closer look at fingerprints, strips, palette, typography, and supplied profile-card artwork.
-- **Specimen gallery:** eight original cards with aroma filters, accessible detail dialogs, and original-image downloads.
+- **Specimen archive:** eight original cards with aroma filters, accessible detail dialogs, and original-image downloads. The supplied JPEGs are 398 × 594 pixels and are displayed at up to 199 CSS pixels wide for 2x pixel density; they are not upscaled. Hero and generated cards use live vectors and text instead.
 
 ## Run locally
 
@@ -36,6 +40,11 @@ Vercel builds with `npm run build` and serves `dist/`. GitHub and Vercel use the
 | `src/engine.js` | Classification rules and historical sample panels extracted from the supplied Social Kit prototype |
 | `src/visuals.js` | Fixed-sector fingerprint, strip, illustrative signatures, standalone SVG export |
 | `src/app.js` | Profile selection, lab state, formats, gallery, dialogs |
+| `src/experience.js` | Theme, searchable education library, gestures, social studio, buyer sheets |
+| `src/social-designs.js` | Six SVG compositions and native PNG/SVG exports with embedded fonts |
+| `src/buyer-sheet.js` | Responsive chemovar sheet and self-contained print export |
+| `src/education-data.js` | All 38 source educational terpene entries |
+| `src/expanded.css` | Dark/light themes and expanded experience |
 | `public/assets/` | Supplied artwork and self-hosted open-source fonts |
 | `docs/provenance.json` | SHA-256 hashes and asset lineage |
 
@@ -49,13 +58,15 @@ The lab retains the prototype’s classification weights and gas-balance heurist
 
 The six sliders edit six primary notes; the selected sample’s other modeled terpenes remain present. Clear resets **all** values. Any edit is labeled illustrative. The ten profile-atlas signatures are expressly illustrative, not measured cultivar profiles. A displayed total is the sum of modeled terpene inputs, which may differ from the source panel’s total because unmodeled analytes are excluded.
 
+The expanded Social Kit designs retain the source formats and data while replacing unsupported “validated COA” language with historical-source labels. The comparison is titled “Same system. Different flower.” because the chosen samples have different THC values. Current commercial fields are shown as not supplied.
+
 Original cards are preserved byte-for-byte, including their SIM/REAL labels. Those labels are source content, not independent verification. Original profile artwork may contain legacy educational copy; it is shown as design artwork, not an endorsed effects claim. Aroma profiles do not predict medical outcomes.
 
 The new showcase is isolated from prior Flower Spectrum repositories and deployments. Source prototypes and the supplied PDF are preserved in the local task’s private working archive; public provenance records contain checksums without private filesystem paths.
 
 ## Validation
 
-- Six automated tests cover known sample outputs, empty states, strip rules across deterministic randomized blends, reference signatures, and safe portable exports.
+- Nine automated tests cover known sample outputs, empty states, strip rules across deterministic randomized blends, reference signatures, portable exports, 38 unique educational entries, 18 social sample/format combinations, and complete buyer panels.
 - Browser checks cover all profiles, presets, slider updates, three downloads, clear/reset, all design tabs, keyboard interactions, filters, dialog focus restoration, deep links, reduced motion, and image loading.
 - Layouts checked at 320, 390, 768, and 1440 pixels with no horizontal overflow.
 - Screenshots and the latest browser check result are in `docs/`. To rerun browser checks, install Playwright as a local test tool, start the dev server, then run `node scripts/browser-qa.cjs`. Set `SITE_URL` for production checks and `CHROME_PATH` to use a local Chrome executable.

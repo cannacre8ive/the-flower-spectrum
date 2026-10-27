@@ -246,6 +246,36 @@
       "source_group": "supplied-artwork",
       "published_path": null,
       "sha256": "c0ebc178867f23b03d964cf4f58d205ab90a798332f9072d761ac03b09d40bdb"
+    },
+    {
+      "source_filename": "03 Major Terpenes.pdf",
+      "source_group": "education-source",
+      "published_path": "public/assets/education/major-terpenes.pdf",
+      "sha256": "7f8eb83e138893bc9c5f9b99aac12ee3dd63df49647affb13600d5da7c27ed25"
+    },
+    {
+      "source_filename": "04 Minor Supporting Terpenes.pdf",
+      "source_group": "education-source",
+      "published_path": "public/assets/education/supporting-terpenes.pdf",
+      "sha256": "6a87f18c94063bfe77551f7c4c4855dbafb4f52221ca724dc2d8f027cbb67b82"
+    },
+    {
+      "source_filename": "terpenes.js",
+      "source_group": "education-source",
+      "published_path": "src/education-data.js",
+      "sha256": "e18e6d6f28ff786a9e695d550fbf0b2709398ce0c8b548605a271a8bceda7d99"
+    },
+    {
+      "source_filename": "Cultivator Social Kit v1.0 (revision attachment)",
+      "source_group": "prototype",
+      "published_path": null,
+      "sha256": "095683fdf512b43b0f0fdc6e27c1eb7f9400f0a7d770b0da898f4b688e7db865"
+    },
+    {
+      "source_filename": "Cultivator Social Kit v1.0 (revision attachment)",
+      "source_group": "prototype",
+      "published_path": null,
+      "sha256": "095683fdf512b43b0f0fdc6e27c1eb7f9400f0a7d770b0da898f4b688e7db865"
     }
   ]
 }

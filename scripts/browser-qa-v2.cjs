@@ -1,0 +1,43 @@
+const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const sharp=require(process.env.SHARP_MODULE || 'sharp');
+const fs=require('node:fs/promises'),assert=require('node:assert/strict');
+(async()=>{
+const b=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});const p=await b.newPage({viewport:{width:1440,height:1000}});const errors=[],failed=[],checks=[];p.on('pageerror',e=>errors.push(e.message));p.on('response',r=>{if(r.status()>=400)failed.push(r.url());});const base=process.env.SITE_URL||'http://localhost:4173';await p.goto(base,{waitUntil:'networkidle'});await p.evaluate(()=>document.fonts.ready);
+assert.equal(await p.locator('html').getAttribute('data-theme'),'dark');assert.equal(await p.locator('.site-header .brand-strip i').count(),10);
+await p.locator('#theme-toggle').click();await p.waitForTimeout(300);assert.equal(await p.locator('html').getAttribute('data-theme'),'light');await p.reload();assert.equal(await p.locator('html').getAttribute('data-theme'),'light');await p.locator('#theme-toggle').click();checks.push('Dark default, persistent light preference, 10-color strip wordmark');
+for(let i=0;i<10;i++){const sector=p.locator(`#profile-fingerprint [data-sector="${i}"]`);await sector.focus();await p.keyboard.press('Enter');assert.equal(await p.locator(`[data-profile="${i}"]`).getAttribute('aria-pressed'),'true');}
+checks.push('All 10 spectrum sectors are keyboard-interactive and update profile detail');
+await p.locator('[data-profile="2"]').click();await p.locator('.profile-extra summary').click();await p.waitForTimeout(250);assert.equal(await p.locator('.profile-extra').getAttribute('open'),'');await p.locator('[data-open-terp="limonene"]').click();assert.equal(await p.locator('.terp-card').count(),1);assert.ok((await p.locator('.terp-card h3').textContent()).includes('Limonene'));checks.push('Profile expansion and linked terpene education');
+await p.locator('#terp-search').fill('');
+for(const [tier,count]of [['primary',9],['key',7],['supporting',22],['all',38]]){await p.locator(`[data-tier="${tier}"]`).click();assert.equal(await p.locator('.terp-card').count(),count);}
+await p.locator('#terp-search').fill('lavender');assert.equal(await p.locator('.terp-card').count(),1);await p.locator('#terp-search').fill('NOT_A_TERPENE');assert.ok(await p.locator('#terp-empty').isVisible());await p.locator('#clear-search').click();assert.equal(await p.locator('.terp-card').count(),38);await p.locator('#terp-profile').selectOption('floral_soft');assert.ok(await p.locator('.terp-card').count()>3);await p.locator('#terp-profile').selectOption('all');checks.push('38-card library, exact 9/7/22 collections, search, profile filter, empty/reset');
+await p.locator('.terp-card details summary').first().click();await p.waitForTimeout(250);assert.equal(await p.locator('.terp-card details').first().getAttribute('open'),'');await p.locator('.terp-card details summary').first().click();await p.waitForTimeout(250);assert.equal(await p.locator('.terp-card details').first().getAttribute('open'),null);
+await p.locator('[data-rail-next="terp-rail"]').click();await p.waitForTimeout(400);assert.ok(await p.locator('#terp-rail').evaluate(e=>e.scrollLeft)>200);await p.locator('#terp-rail').evaluate(e=>e.scrollLeft=0);const rail=await p.locator('#terp-rail').boundingBox();await p.mouse.move(rail.x+330,rail.y+60);await p.mouse.down();await p.mouse.move(rail.x+50,rail.y+60,{steps:15});await p.mouse.up();await p.waitForTimeout(300);assert.ok(await p.locator('#terp-rail').evaluate(e=>e.scrollLeft)>100);checks.push('Animated educational disclosures, rail arrows and actual mouse dragging');
+await p.locator('#studio-farm').fill('Field & Forest');await p.locator('#studio-handle').fill('@fieldforest');assert.ok((await p.locator('#social-preview').textContent()).includes('Field & Forest'));
+await fs.mkdir('work/v2-exports',{recursive:true});
+for(let i=0;i<6;i++){
+ await p.locator(`[data-social-format="${i}"]`).click();await p.waitForTimeout(1200);
+ const svg=p.locator('#social-preview>svg'),width=Number(await svg.getAttribute('width')),height=Number(await svg.getAttribute('height'));
+ const [download]=await Promise.all([p.waitForEvent('download'),p.locator('#social-png').click()]);const file=await download.path(),meta=await sharp(file).metadata();assert.equal(meta.width,width);assert.equal(meta.height,height);await download.saveAs('work/v2-exports/'+download.suggestedFilename());
+ const [vector]=await Promise.all([p.waitForEvent('download'),p.locator('#social-svg').click()]);const text=await fs.readFile(await vector.path(),'utf8');assert.ok(text.includes('data:font/woff2;base64,'));assert.ok(text.includes('Historical sample'));assert.ok(text.includes('Field &amp; Forest'));
+}
+checks.push('All six social designs export real PNGs at native dimensions and self-contained SVGs');
+await p.locator('#social-prev').click();assert.equal(await p.locator('#social-position').textContent(),'5 / 6');await p.locator('#social-next').click();assert.equal(await p.locator('#social-position').textContent(),'6 / 6');
+await p.locator('#social-preview').dispatchEvent('pointerdown',{clientX:700,clientY:400,pointerId:1,pointerType:'touch'});await p.locator('#social-preview').dispatchEvent('pointerup',{clientX:500,clientY:405,pointerId:1,pointerType:'touch'});assert.equal(await p.locator('#social-position').textContent(),'1 / 6');
+await p.locator('#social-expand').click();assert.ok(await p.locator('#design-dialog').isVisible());await p.locator('#design-full').click();assert.equal(await p.locator('#design-art').evaluate(e=>e.style.width),'1080px');await p.keyboard.press('Escape');assert.equal(await p.locator('#design-dialog').isVisible(),false);checks.push('Social personalization, previous/next, swipe, full-size inspection and Escape');
+for(const [id,count]of [['jb',13],['sdr',17],['km',17]]){
+ await p.locator(`[data-buyer="${id}"]`).click();await p.locator('.chemistry-panel summary').click();await p.waitForTimeout(250);assert.equal(await p.locator('.chemistry-panel tbody tr').count(),count);assert.ok(await p.locator('.chemistry-panel tbody').isVisible());
+ const [download]=await Promise.all([p.waitForEvent('download'),p.locator('#buyer-download').click()]);const html=await fs.readFile(await download.path(),'utf8');assert.ok(html.includes('Field &amp; Forest'));assert.ok(html.includes('Not supplied'));assert.equal((html.match(/<th scope="row">/g)||[]).length,count);await download.saveAs('work/v2-exports/'+download.suggestedFilename());
+}
+checks.push('Three buyer sheets: exact 13/17/17 analyte rows, disclosure and complete editable print exports');
+await p.locator('#studio-farm').fill('Ideal Cannabis');await p.locator('#studio-handle').fill('@idealcannabis');
+for(const theme of ['dark','light']){
+ if(await p.locator('html').getAttribute('data-theme')!==theme)await p.locator('#theme-toggle').click();
+ for(const width of [320,390,768,1440]){await p.setViewportSize({width,height:1000});await p.waitForTimeout(300);const sizes=await p.evaluate(()=>({page:document.documentElement.scrollWidth,viewport:innerWidth}));assert.equal(sizes.page,sizes.viewport,`${theme} at ${width}`);}
+}
+checks.push('Both themes at 320,390,768,1440px with no horizontal page overflow');
+await p.locator('#theme-toggle').click();await p.setViewportSize({width:1440,height:1000});await p.locator('.artwork-archive summary').click();await p.waitForTimeout(300);await p.locator('#gallery-grid').scrollIntoViewIfNeeded();await p.evaluate(async()=>{await Promise.all([...document.querySelectorAll('#gallery-grid img')].map(i=>i.decode()));});assert.equal(await p.locator('#gallery-grid img').count(),8);const sizes=await p.locator('#gallery-grid img').evaluateAll(imgs=>imgs.map(i=>({w:i.getBoundingClientRect().width,natural:i.naturalWidth})));assert.ok(sizes.every(i=>i.w<=199&&i.natural===398));checks.push('Original 398px photographic cards render at <=199 CSS pixels for 2x density');
+await p.emulateMedia({reducedMotion:'reduce'});assert.equal(await p.evaluate(()=>getComputedStyle(document.documentElement).scrollBehavior),'auto');checks.push('Reduced motion respected');
+await p.goto(base+'/#wholesale',{waitUntil:'networkidle'});assert.ok(await p.locator('#buyer-sheet').isVisible());assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);checks.push('Fresh buyer deep link, no browser exceptions or failed requests');
+await fs.writeFile('docs/v2-browser-qa.json',JSON.stringify({base,checks,errors,failed},null,2));console.log(JSON.stringify({checks,errors,failed},null,2));await b.close();
+})().catch(e=>{console.error(e);process.exit(1)});

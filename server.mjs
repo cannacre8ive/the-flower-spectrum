@@ -2,7 +2,7 @@ import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 const root=process.cwd();
-const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.jpg':'image/jpeg','.png':'image/png','.woff2':'font/woff2','.json':'application/json'};
+const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.jpg':'image/jpeg','.png':'image/png','.pdf':'application/pdf','.woff2':'font/woff2','.json':'application/json'};
 http.createServer(async(req,res)=>{
  try {let file=decodeURIComponent(new URL(req.url,'http://localhost').pathname); if(file==='/')file='/index.html';
  const base=file.startsWith('/assets/')||file==='/favicon.svg'||file==='/robots.txt'?path.join(root,'public'):root;

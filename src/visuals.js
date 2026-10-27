@@ -2,17 +2,19 @@ import { PROFILES, bandSegments } from './engine.js';
 export const escapeXML = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
 const point=(r,a)=>[250+r*Math.cos(a),250+r*Math.sin(a)].map(n=>n.toFixed(2)).join(' ');
 export function wedge(inner,outer,start,end){return `M${point(inner,start)} L${point(outer,start)} A${outer} ${outer} 0 0 1 ${point(outer,end)} L${point(inner,end)} A${inner} ${inner} 0 0 0 ${point(inner,start)} Z`;}
-export function fingerprint(c,{dark=false,labels=false}={}){
+export function fingerprint(c,{dark=false,labels=false,interactive=false,active=-1}={}){
  if(!c)return '';
  const scores=Object.fromEntries(c.ranked.map(p=>[p.key,p.pct])),max=Math.max(...Object.values(scores),1),guide=dark?'#778367':'#6e7758';
  const description=PROFILES.map(p=>`${p.label}: ${scores[p.key]||0} model score percent`).join('; ');
- let svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" class="fingerprint" role="img" aria-label="Aroma fingerprint. ${escapeXML(description)}"><title>Aroma fingerprint: fixed positions, strength relative to the leading profile</title>`;
+ let svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" class="fingerprint" role="${interactive?'group':'img'}" aria-label="Aroma fingerprint. ${escapeXML(description)}"><title>Aroma fingerprint: fixed positions, strength relative to the leading profile</title>`;
  for(const r of [54,100,148,196]) svg+=`<circle cx="250" cy="250" r="${r}" fill="none" stroke="${guide}" stroke-width="${r===196?1:.7}" opacity=".5" ${r!==196?'stroke-dasharray="2 5"':''}/>`;
  PROFILES.forEach((p,i)=>{
   const start=-Math.PI/2+i*Math.PI/5+.025,end=start+Math.PI/5-.05,v=scores[p.key]||0,r=54+142*v/max;
-  svg+=`<path d="${wedge(54,196,start,end)}" fill="${p.color}" opacity=".06"/>`;
+  if(interactive)svg+=`<g data-sector="${i}" tabindex="0" role="button" aria-label="Explore ${escapeXML(p.label)}" aria-pressed="${i===active}">`;
+  svg+=`<path class="sector-ground ${i===active?'sector-active':''}" d="${wedge(54,196,start,end)}" fill="${p.color}" opacity=".06"/>`;
   if(v>0)svg+=`<path d="${wedge(54,r,start,end)}" fill="${p.color}" opacity=".96"><title>${escapeXML(p.label)}: ${v}% of modeled aroma score</title></path>`;
   if(labels){const a=(start+end)/2,pos=point(222,a);svg+=`<text x="${pos.split(' ')[0]}" y="${pos.split(' ')[1]}" text-anchor="middle" dominant-baseline="central" fill="${dark?'#c5cdbb':'#525d42'}" font-family="Arial,sans-serif" font-size="13">${p.short}</text>`;}
+   if(interactive)svg+='</g>';
  });
  svg+=`<circle cx="250" cy="250" r="7" fill="${c.ranked[0].color}"/><path d="M250 26v10M250 464v10M26 250h10M464 250h10" stroke="${guide}" stroke-width="1"/></svg>`;
  return svg;
