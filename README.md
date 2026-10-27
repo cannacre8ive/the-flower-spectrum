@@ -58,7 +58,7 @@ The new showcase is isolated from prior Flower Spectrum repositories and deploym
 - Six automated tests cover known sample outputs, empty states, strip rules across deterministic randomized blends, reference signatures, and safe portable exports.
 - Browser checks cover all profiles, presets, slider updates, three downloads, clear/reset, all design tabs, keyboard interactions, filters, dialog focus restoration, deep links, reduced motion, and image loading.
 - Layouts checked at 320, 390, 768, and 1440 pixels with no horizontal overflow.
-- Screenshots and the latest browser check result are in `docs/`.
+- Screenshots and the latest browser check result are in `docs/`. To rerun browser checks, install Playwright as a local test tool, start the dev server, then run `node scripts/browser-qa.cjs`. Set `SITE_URL` for production checks and `CHROME_PATH` to use a local Chrome executable.
 
 ## Credits and rights
 
