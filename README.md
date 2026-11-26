@@ -2,7 +2,7 @@
 
 A language for what you smell. An interactive portfolio website showcasing Spencer Gray’s aroma identity concept and design system.
 
-**[Explore the live site](https://the-flower-spectrum.vercel.app)** · **[GitHub](https://github.com/cannacre8ive/the-flower-spectrum)**
+**[Explore the live site](https://www.flowerspectrum.com)** · **[GitHub](https://github.com/cannacre8ive/the-flower-spectrum)**
 
 ![The Flower Spectrum website](docs/v3-workspace.png)
 
