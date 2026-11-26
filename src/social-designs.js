@@ -8,13 +8,16 @@ export const FORMATS=[
  {id:'compare',title:'Different flower. Different story.',size:[1080,1080],shape:'1:1 / Comparison',role:'Show the difference',description:'Two strains, one visual grammar. The comparison explains why aroma offers a richer conversation than a single potency number.'},
  {id:'voice',title:'Brand voice',size:[1080,1080],shape:'1:1 / Editorial',role:'Express a point of view',description:'A typographic brand statement built from the same system. A moment of perspective that still belongs unmistakably to the farm.'}
 ];
+export const PHOTO_FORMAT={id:'photo',title:'Flower portrait',size:[1080,1350],shape:'4:5 / Portrait',role:'Let the flower lead',description:'Your photograph, full bleed, with the fingerprint and strip carrying the aroma identity. Made for the feed.'};
 export function brandSVG(x,y,scale=1){return `<g transform="translate(${x} ${y}) scale(${scale})">${PROFILES.map((p,i)=>`<rect x="${i*8}" y="0" width="8" height="28" fill="${p.color}"/>`).join('')}<text x="96" y="25" fill="#eee9dd" font-family="Newsreader,Georgia,serif" font-size="33" font-weight="600">Flower Spectrum</text></g>`;}
 function text(x,y,value,size=30,color='#eee9dd',font='DM Sans,Arial,sans-serif',extra=''){return `<text x="${x}" y="${y}" fill="${color}" font-family="${font}" font-size="${size}" ${extra}>${esc(value)}</text>`;}
 function lines(x,y,value,size=30,width=48,color='#c1bdaf',line=1.35){const words=value.split(/\s+/),rows=[''];for(const word of words){let n=rows.length-1;if((rows[n]+' '+word).trim().length>width&&rows[n])rows.push(word);else rows[n]+=(rows[n]?' ':'')+word;}return rows.map((r,i)=>text(x,y+i*size*line,r,size,color)).join('');}
 function fp(c,x,y,size){return `<svg x="${x}" y="${y}" width="${size}" height="${size}" viewBox="0 0 500 500">${fingerprint(c,{dark:true}).replace(/<svg[^>]*>/,'').replace(/<\/svg>$/,'')}</svg>`;}
 function band(c,x,y,w,h){let offset=x;return bandSegments(c).map(p=>{const width=w*p.frac,s=`<rect x="${offset}" y="${y}" width="${width}" height="${h}" fill="${p.color}"/>`;offset+=width;return s;}).join('');}
-export function socialSVG(format,strain,{farm='Ideal Cannabis',handle='@idealcannabis',other,profileCopy}={}){
- const f=FORMATS.find(f=>f.id===format)||FORMATS[0],w=f.size[0],h=f.size[1],c=classify(strain.values),lead=c.ranked[0],blend=blendName(c),serif='Newsreader,Georgia,serif';
+export function socialSVG(format,strain,{farm='Ideal Cannabis',handle='@idealcannabis',other,profileCopy,footer='Historical sample · 2023 · Portfolio demonstration',stat,dropKicker='Drop announcement / example',photo}={}){
+ const f=[...FORMATS,PHOTO_FORMAT].find(f=>f.id===format)||FORMATS[0],w=f.size[0],h=f.size[1],c=classify(strain.values),lead=c.ranked[0],blend=blendName(c),serif='Newsreader,Georgia,serif';
+ // The headline figure defaults to the historical THC value; uploaded flowers pass their own.
+ stat=stat||{value:strain.thc+'%',label:'THC · historical panel',line:strain.thc+'% THC'};
  let a=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(f.title+' for '+strain.name)}"><title>${esc(f.title+' — '+strain.name)}</title><rect width="${w}" height="${h}" fill="#151713"/><defs><pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".7" fill="#6c735a" opacity=".3"/></pattern></defs><rect width="${w}" height="${h}" fill="url(#dots)"/>`;
  a+=brandSVG(68,58,.86)+text(1012,80,farm,19,'#b4b7a6',undefined,'text-anchor="end"');
  if(format==='highlight'){
@@ -24,11 +27,17 @@ export function socialSVG(format,strain,{farm='Ideal Cannabis',handle='@idealcan
   a+='<path d="M68 807H1012" stroke="#414837"/>';
   a+=text(68,850,'Leading reported analytes',17,'#a4ab97');
   strain.panel.slice(0,3).forEach((t,i)=>{a+=text(68,891+i*33,`${t[0]}   ${t[1].toFixed(2)}%`,23);});
-  a+=text(1012,910,strain.thc+'%',64,'#eee9dd',serif,'text-anchor="end"')+text(1012,944,'THC · historical panel',18,'#a4ab97',undefined,'text-anchor="end"');
+  a+=text(1012,910,stat.value,64,'#eee9dd',serif,'text-anchor="end"')+text(1012,944,stat.label,18,'#a4ab97',undefined,'text-anchor="end"');
  }else if(format==='drop'){
-  a+=text(68,211,'Drop announcement / example',24,lead.color)+text(68,389,strain.name,97,'#eee9dd',serif)+text(72,447,blend,30,lead.color);
+  a+=text(68,211,dropKicker,24,lead.color)+text(68,389,strain.name,97,'#eee9dd',serif)+text(72,447,blend,30,lead.color);
   a+=lines(72,551,strain.aroma,40,36,'#dedaca',1.4)+fp(c,200,785,680)+band(c,68,1550,944,85);
-  a+=text(68,1720,strain.thc+'% THC',58,'#eee9dd',serif)+text(68,1775,'A signature worth getting to know.',30,'#c1bdaf');
+  a+=text(68,1720,stat.line,58,'#eee9dd',serif)+text(68,1775,'A signature worth getting to know.',30,'#c1bdaf');
+ }else if(format==='photo'){
+  // Rebuilt from the top: the photograph sits under the brand line, so the shared header is redrawn over a scrim.
+  a=a.slice(0,a.indexOf('<rect width="'+w+'" height="'+h+'" fill="url(#dots)"/>'))+`<defs><linearGradient id="scrim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0e0e0c" stop-opacity=".72"/><stop offset=".2" stop-color="#0e0e0c" stop-opacity=".08"/><stop offset=".5" stop-color="#0e0e0c" stop-opacity=".12"/><stop offset=".78" stop-color="#0e0e0c" stop-opacity=".9"/><stop offset="1" stop-color="#0e0e0c" stop-opacity=".97"/></linearGradient></defs>`+(photo?`<image href="${esc(photo)}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice"/>`:'')+`<rect width="${w}" height="${h}" fill="url(#scrim)"/>`+brandSVG(68,58,.86)+text(1012,80,farm,19,'#dedaca',undefined,'text-anchor="end"');
+  a+=`<circle cx="872" cy="968" r="150" fill="#151713" opacity=".86"/>`+fp(c,732,828,280);
+  a+=text(68,1010,strain.name,strain.name.length>16?72:92,'#eee9dd',serif)+text(72,1064,blend+' / '+c.confidence,27,lead.color)+band(c,68,1120,944,44);
+  strain.panel.slice(0,3).forEach((t,i)=>{a+=text(68+i*320,1218,t[0],20,'#c1bdaf')+text(68+i*320,1252,t[1].toFixed(2)+'%',28);});
  }else if(format==='fingerprint'){
   a+=text(68,200,'Every flower has a signature.',48,'#eee9dd',serif)+fp(c,170,250,740);
   a+=text(540,1040,strain.name,74,'#eee9dd',serif,'text-anchor="middle"')+text(540,1090,blend,27,lead.color,undefined,'text-anchor="middle"')+band(c,68,1160,944,48);
@@ -47,7 +56,7 @@ export function socialSVG(format,strain,{farm='Ideal Cannabis',handle='@idealcan
   a+=text(68,188,'Trust your nose',23,lead.color)+lines(68,337,'The number on the jar is only part of the story.',75,24,'#eee9dd',1.15);
   a+=lines(68,751,'Aroma adds another dimension. A familiar language for a wonderfully complex flower.',31,49,'#c1bdaf',1.4)+band(c,68,914,944,28);
  }
- a+=`<path d="M68 ${h-70}H1012" stroke="#414837"/>`+text(68,h-36,'Historical sample · 2023 · Portfolio demonstration',14,'#a4ab97')+text(1012,h-36,handle,17,'#c4b275',undefined,'text-anchor="end"')+'</svg>';
+ a+=`<path d="M68 ${h-70}H1012" stroke="#414837"/>`+text(68,h-36,footer,14,'#a4ab97')+text(1012,h-36,handle,17,'#c4b275',undefined,'text-anchor="end"')+'</svg>';
  return a;
 }
 let fontCache;
@@ -56,5 +65,6 @@ export async function embedFonts(svg){
  return svg.replace('</title>','</title><style>'+await fontCache+'</style>');
 }
 export function saveFile(data,name,type){const url=URL.createObjectURL(new Blob([data],{type})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);}
-export async function saveSocial(svg,format,name){const embedded=await embedFonts(svg);if(format==='svg'){saveFile(embedded,name+'.svg','image/svg+xml');return;}
- const image=new Image(),url=URL.createObjectURL(new Blob([embedded],{type:'image/svg+xml'}));try{await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject;image.src=url;});const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;canvas.getContext('2d').drawImage(image,0,0);const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));if(!blob)throw Error('PNG export failed');saveFile(blob,name+'.png','image/png');}finally{URL.revokeObjectURL(url);}}
+export async function pngBlob(svg){const embedded=await embedFonts(svg);
+ const image=new Image(),url=URL.createObjectURL(new Blob([embedded],{type:'image/svg+xml'}));try{await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject;image.src=url;});const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;canvas.getContext('2d').drawImage(image,0,0);const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));if(!blob)throw Error('PNG export failed');return blob;}finally{URL.revokeObjectURL(url);}}
+export async function saveSocial(svg,format,name){if(format==='svg'){saveFile(await embedFonts(svg),name+'.svg','image/svg+xml');return;}saveFile(await pngBlob(svg),name+'.png','image/png');}

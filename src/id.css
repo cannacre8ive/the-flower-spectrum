@@ -1,0 +1,106 @@
+/* Landing page and the Spectrum ID tool. Uses the workspace palette and type. */
+:root{--fsid-error:#eaa78f}:root[data-theme=light]{--fsid-error:#9a3b24}
+.tab-number.tab-free{color:var(--ui-accent);opacity:1;border:1px solid currentColor;border-radius:20px;padding:2px 7px;font-size:9px;letter-spacing:.04em}
+
+/* Landing */
+.landing h2,.landing h3,.fsid h3{font-family:var(--serif);font-weight:400}
+.landing-hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:64px;align-items:center;padding:36px 0 60px;border-bottom:1px solid var(--edge)}
+.landing-copy h2{font-size:clamp(42px,5.4vw,74px);line-height:1;letter-spacing:-.035em;max-width:12ch;text-wrap:balance}
+.landing-lede{font-size:17px;line-height:1.6;color:var(--secondary);max-width:54ch;margin-top:26px}
+.landing-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.landing-actions .button{padding:17px 22px;font-size:14px;gap:28px;text-decoration:none}
+.landing-note{font-size:12px;line-height:1.6;color:var(--secondary);max-width:62ch;margin-top:20px}
+.landing-specimen{background:var(--surface);border:1px solid var(--edge);border-radius:6px;padding:30px 30px 26px}
+#landing-fingerprint{max-width:340px;margin:0 auto 18px}#landing-fingerprint svg{display:block;width:100%;height:auto}
+.landing-specimen figcaption{display:grid;gap:8px}.landing-specimen strong{font:400 34px/1.05 var(--serif);letter-spacing:-.02em}
+.landing-specimen figcaption>span{font-size:13px;color:var(--secondary)}.landing-specimen .spectrum-strip{height:14px;margin-top:8px}.landing-specimen small{font-size:11px;color:var(--secondary)}
+.landing-steps{list-style:none;margin:0;padding:44px 0;display:grid;grid-template-columns:repeat(3,1fr);gap:40px;border-bottom:1px solid var(--edge)}
+.landing-steps span{font-size:11px;color:var(--ui-accent);font-variant-numeric:tabular-nums}
+.landing-steps h3{font-size:26px;letter-spacing:-.02em;margin:12px 0 10px}.landing-steps p{font-size:14px;line-height:1.6;color:var(--secondary);max-width:38ch}
+.landing-kit{padding:52px 0 48px;border-bottom:1px solid var(--edge)}
+.kit-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.kit-tile{display:block;color:inherit;text-decoration:none}
+.kit-tile-art{aspect-ratio:1;background:var(--surface);border:1px solid var(--edge);border-radius:5px;display:grid;place-items:center;overflow:hidden;padding:9%;transition:border-color .2s}
+.kit-tile:hover .kit-tile-art,.kit-tile:focus-visible .kit-tile-art{border-color:var(--ui-accent)}
+.kit-tile-art svg{display:block;max-width:100%;max-height:100%;width:auto;height:auto}.kit-tile-art[data-tile="0"] svg,.kit-tile-art[data-tile="1"] svg{width:100%}
+.kit-tile h3{font-size:23px;letter-spacing:-.02em;margin:16px 0 6px}.kit-tile p{font-size:13px;line-height:1.55;color:var(--secondary)}
+.landing-explore{padding:48px 0 20px}.landing-explore h2{margin-bottom:26px}
+.landing-explore>div{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.landing-explore a{display:block;color:var(--text);text-decoration:none;border-top:1px solid var(--edge);padding:16px 0;font-size:16px;transition:border-color .2s}
+.landing-explore a:hover{border-color:var(--ui-accent)}
+.landing-explore a span{display:block;font-size:10px;color:var(--secondary);margin-bottom:10px}.landing-explore a small{display:block;font-size:12px;line-height:1.5;color:var(--secondary);margin-top:6px}
+
+/* Spectrum ID: start */
+.fsid.section-pad{padding:0}
+.fsid-start{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.65fr);gap:36px;align-items:start}
+.fsid-drop{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;min-height:280px;padding:36px;text-align:center;cursor:pointer;background:var(--surface);border:1.5px dashed var(--edge);border-radius:6px;transition:border-color .2s,background .2s}
+.fsid-drop:hover,.fsid-drop.over{border-color:var(--ui-accent);background:var(--raised)}.fsid-drop:focus-within{outline:2px solid var(--ui-accent);outline-offset:4px}
+.fsid-drop strong{font:400 34px/1.1 var(--serif);letter-spacing:-.02em}.fsid-drop span{font-size:14px;line-height:1.5;color:var(--secondary);max-width:38ch}
+.fsid-drop input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.fsid-alt{display:flex;flex-direction:column;align-items:flex-start;gap:14px}.fsid-alt>p{font-size:13px;line-height:1.55;color:var(--secondary)}
+.fsid-alt details{width:100%;margin-top:6px}.fsid-alt summary{font-size:13px}
+.fsid textarea{display:block;width:100%;background:var(--canvas);color:var(--text);border:1px solid var(--edge);border-radius:4px;padding:12px;font:13px/1.6 ui-monospace,Menlo,Consolas,monospace;resize:vertical;margin-bottom:12px}
+.fsid-alt details .button{margin-bottom:18px}
+.fsid-status{min-height:22px;margin:18px 0;font-size:14px;line-height:1.55;color:var(--secondary);max-width:80ch}.fsid-status.error{color:var(--fsid-error)}.fsid-status:empty{margin:0;min-height:0}
+
+/* Spectrum ID: result */
+.fsid-top{display:grid;grid-template-columns:minmax(0,430px) minmax(0,1fr);gap:44px;align-items:start}
+.fsid-card{background:var(--surface);border:1px solid var(--edge);border-radius:6px;padding:26px 28px 28px}
+.fsid-card-top{display:flex;justify-content:space-between;gap:16px;font-size:11px;letter-spacing:.05em;color:var(--secondary);font-variant-numeric:tabular-nums}
+.fsid-card>svg.fingerprint{display:block;width:100%;max-width:310px;height:auto;margin:10px auto 14px}
+.fsid-card h3{font-size:42px;line-height:1.04;letter-spacing:-.03em;overflow-wrap:anywhere}
+.fsid-blend{font-size:17px;margin:8px 0 16px}.fsid-blend span{color:var(--secondary);font-size:13px}
+.fsid-card .spectrum-strip{height:34px}.fsid-card .spectrum-strip span{font-size:10px;font-weight:600;padding:0 10px;color:#151713;letter-spacing:.04em}
+.fsid-aroma{font-size:14px;line-height:1.6;color:var(--secondary);margin-top:16px}
+.fsid-stats{display:grid;grid-template-columns:1fr 1fr;gap:18px 20px;margin:22px 0 0;padding-top:20px;border-top:1px solid var(--edge)}
+.fsid-stats dt{font-size:11px;color:var(--secondary)}.fsid-stats dd{margin:5px 0 0;font:400 25px/1.1 var(--serif);overflow-wrap:anywhere}
+.fsid-card-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}.fsid-card-actions .button{font-size:11px;padding:12px 14px;gap:14px}
+.fsid-card .empty-state{margin:60px auto}
+.fsid-fields{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px}
+.fsid-fields label{display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--secondary)}.fsid-fields em{font-style:normal;opacity:.8}
+.fsid-fields input{width:100%;min-height:46px;background:var(--surface);color:var(--text);border:1px solid var(--edge);border-radius:4px;padding:11px 13px;font-size:14px}
+.fsid-fields input[type=file]{padding:9px;font-size:12px}
+.fsid-review{margin-top:26px}.fsid-review summary{font-size:14px}.fsid-review summary>span{font-size:12px;color:var(--secondary)}
+.source-disclosure>p.fsid-help,.fsid-help{font-size:13px;line-height:1.55;color:var(--secondary);max-width:70ch;margin-bottom:14px}.fsid-help em,.fsid-table em{font-style:normal;color:var(--ui-accent)}
+.source-disclosure>div.fsid-table-wrap{display:block;padding:0;max-height:330px;overflow:auto;border:1px solid var(--edge);border-radius:4px;margin-bottom:16px}
+.source-disclosure>div#fsid-unmapped{display:block;padding:0}
+.fsid-table{width:100%;border-collapse:collapse;font-size:13px}
+.fsid-table th,.fsid-table td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--edge);font-weight:400;vertical-align:middle}
+.fsid-table thead th{position:sticky;top:0;background:var(--raised);font-size:11px;color:var(--secondary);z-index:1}
+.fsid-table td:nth-child(2){color:var(--secondary);font-size:12px}.fsid-table td:last-child,.fsid-table thead th:last-child{text-align:right;width:112px}
+.fsid-table input{width:88px;background:var(--canvas);color:var(--text);border:1px solid var(--edge);border-radius:3px;padding:7px 8px;font-size:13px;text-align:right;font-variant-numeric:tabular-nums}
+.fsid-table tbody tr:last-child>*{border-bottom:0}
+#fsid-reset{margin-top:6px}
+
+/* Spectrum ID: kit */
+.fsid-kit{margin-top:52px;padding-top:40px;border-top:1px solid var(--edge)}.fsid-kit .section-heading{margin-bottom:24px}
+.fsid-kit-nav{margin-bottom:24px}.fsid-kit-nav button{font-size:13px}
+.fsid-kit-body{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:48px;align-items:start}
+.fsid-stage{display:grid;place-items:center;min-height:380px;padding:24px;background:var(--wash);border:1px solid var(--edge);border-radius:5px;overflow:hidden}
+.fsid-stage>svg,.fsid-stage>canvas{display:block;height:min(580px,68vh);width:auto;max-width:100%;border-radius:2px}
+.fsid-stage[data-kit=labels]>svg{height:auto;width:100%;max-width:620px;box-shadow:0 12px 34px rgba(0,0,0,.28)}
+.fsid-stage[data-kit=labels][data-shape=round]>svg{max-width:360px;box-shadow:none;filter:drop-shadow(0 12px 22px rgba(0,0,0,.28))}
+.fsid-stage[data-kit=captions]{display:flex;flex-direction:column;align-items:stretch;gap:0;padding:6px 26px;place-items:initial}
+.fsid-caption{padding:22px 0;border-bottom:1px solid var(--edge)}.fsid-caption:last-child{border-bottom:0}
+.fsid-caption h4{margin:0 0 10px;font-size:11px;font-weight:400;letter-spacing:.05em;color:var(--secondary)}
+.fsid-caption p{font-size:15px;line-height:1.6;max-width:62ch;margin-bottom:14px}
+.fsid-info h3{font-size:36px;line-height:1.05;letter-spacing:-.025em;margin-bottom:12px}
+.fsid-info>p:not(.section-marker):not(.fine-print){font-size:14px;line-height:1.6;color:var(--secondary);max-width:48ch}
+.fsid-info .section-marker{font-size:11px;margin-bottom:14px}.fsid-info .format-list{margin:22px 0}.fsid-info .export-actions{margin-top:20px}
+.fsid-info .button:disabled{opacity:.55;cursor:default}.fsid-info .fine-print{font-size:12px;line-height:1.55}
+.fsid-check{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--secondary);cursor:pointer}.fsid-check input{accent-color:var(--ui-accent);width:16px;height:16px}
+
+@media(max-width:1050px){.landing-hero{gap:36px}.kit-tiles,.landing-explore>div{grid-template-columns:repeat(2,1fr)}.fsid-top{grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:28px}.fsid-kit-body{gap:28px}.fsid-fields{grid-template-columns:1fr}}
+@media(max-width:700px){
+ .workspace-tabs{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.workspace-tabs>button{font-size:10.5px}
+ .landing-hero{grid-template-columns:1fr;gap:30px;padding:10px 0 36px}.landing-copy h2{font-size:44px}.landing-lede{font-size:15px;margin-top:18px}.landing-actions{margin-top:24px}.landing-actions .button{flex:1 1 100%;justify-content:space-between}
+ .landing-specimen{padding:22px}#landing-fingerprint{max-width:250px}
+ .landing-steps{grid-template-columns:1fr;gap:26px;padding:34px 0}.landing-kit{padding:38px 0}.kit-tiles{gap:14px}.kit-tile h3{font-size:19px}.kit-tile p{font-size:12px}
+ .landing-explore{padding:36px 0 10px}.landing-explore>div{gap:14px}
+ .fsid-start,.fsid-top,.fsid-kit-body{grid-template-columns:1fr;gap:24px}.fsid-drop{min-height:210px;padding:26px}.fsid-drop strong{font-size:28px}
+ .fsid-card{padding:20px}.fsid-card h3{font-size:36px}.fsid-fields{grid-template-columns:1fr 1fr;gap:14px}
+ .fsid-table th,.fsid-table td{padding:8px}.fsid-table td:nth-child(2),.fsid-table thead th:nth-child(2){display:none}
+ .fsid-kit{margin-top:36px;padding-top:28px}.fsid-kit-nav{flex-wrap:wrap}.fsid-kit-nav button{font-size:12px;padding:10px 13px;min-height:40px}
+ .fsid-stage{min-height:0;padding:14px}.fsid-stage>svg,.fsid-stage>canvas{height:auto;width:100%;max-height:70vh}.fsid-stage[data-shape=drop]>svg,.fsid-stage[data-shape=clip]>canvas{width:auto;height:62vh}
+ .fsid-info h3{font-size:30px}.fsid-info .export-actions .button{flex:1 1 auto;min-height:44px}
+}

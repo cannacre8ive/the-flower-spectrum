@@ -6,6 +6,18 @@ A language for what you smell. An interactive portfolio website showcasing Spenc
 
 ![The Flower Spectrum website](docs/v3-workspace.png)
 
+## Landing page and the free Spectrum ID tool
+
+The site now opens on a short landing page (`/`) that leads growers into **Your Spectrum ID** (`/#id`), a free tool that incorporates the ingestion layer of the [Flower Spectrum COA classifier](https://github.com/cannacre8ive/flower-spectrum-coa-classifier). The four workspace tabs are unchanged and keep their addresses (`/#spectrum`, `/#terpenes`, `/#studio`, `/#buyers`).
+
+1. **Upload** a lab report PDF that includes a terpene panel (text and CSV also work, or paste the table). The file is read in the browser with a self-hosted copy of PDF.js and is never uploaded.
+2. **Review** every value that was read, beside the name printed on the report. Values are editable; unrecognised analytes are listed, never guessed. A report with fewer than two terpene results is declined with a plain explanation.
+3. **Take the kit:** a Spectrum ID card and ten-digit code, label art (3 × 2 in jar label, 2 in round seal, 4 × 1 in shelf strip at 300 px per inch, light or dark stock), social graphics at native size (five formats, plus a full-bleed portrait when a flower photo is added), a 7-second 1080 × 1920 clip recorded in the browser (MP4 where supported, otherwise WebM), and three caption templates. Share uses the device share sheet where available.
+
+The Spectrum ID code is a literal encoding of the fingerprint: ten digits in fixed sector order, each 0 to 9 relative to the leading profile. The sample report and photograph (`public/assets/demo/`) are the Johnny Glaze demo from the classifier repository.
+
+Not ported from the classifier: OCR for scanned PDFs (pasting the table is the fallback), fetching a report from a public link, the multi-strain CSV dataset, and the React component export.
+
 ## The experience
 
 Four connected tabs replace the long scrolling showcase: Spectrum explorer, Terpene library, Social studio, and Buyer sheets. One panel is visible at a time, with restrained transitions, keyboard navigation, shareable URLs, and browser history. Each tool preserves its state when switching tabs. Social and buyer selections synchronize in both directions. The explorer includes profile browsing and fingerprint composition as two modes.
@@ -50,6 +62,12 @@ Vercel builds with `npm run build` and serves `dist/`. GitHub and Vercel use the
 | `src/social-designs.js` | Six SVG compositions and native PNG/SVG exports with embedded fonts |
 | `src/buyer-sheet.js` | Responsive chemovar sheet and self-contained print export |
 | `src/education-data.js` | All 38 source educational terpene entries |
+| `src/coa.js` | Lab-report parsing: analyte aliases, table detection, PDF row reconstruction, terpene-page selection |
+| `src/spectrum-id.js` | Landing previews and the Spectrum ID tool: upload, review, kit, exports, share |
+| `src/labels.js` | Label art and the ten-digit Spectrum ID code |
+| `src/clip.js` | Canvas animation and in-browser recording of the short clip |
+| `src/id.css` | Landing page and Spectrum ID styles |
+| `public/vendor/pdfjs/` | PDF.js 3.11.174 (Apache-2.0), self-hosted |
 | `src/expanded.css` | Dark/light themes and expanded experience |
 | `public/assets/` | Supplied artwork and self-hosted open-source fonts |
 | `docs/provenance.json` | SHA-256 hashes and asset lineage |
@@ -60,7 +78,7 @@ The site is deliberately dependency-light: native browser modules, semantic HTML
 
 This is a **portfolio demonstration**, not a retail storefront or a validated scientific classifier. The supplied Social Kit prototype includes July 2023 historical panels for Jelly Breath, Sunday Driver, and Kush Mints. Original laboratory PDFs were not supplied, and these data have not been independently validated.
 
-The lab retains the prototype’s classification weights and gas-balance heuristic. Fingerprint lengths are relative to the strongest profile. Model score percentages are rounded independently and may not total exactly 100%. The strip includes up to three profiles at 60% or more of the leader, then normalizes their widths within the selected group.
+The engine now models all 38 library terpenes, using the COA classifier’s parameters, so an uploaded panel is scored in full; the three historical samples score exactly as before. The lab retains the prototype’s classification weights and gas-balance heuristic. Fingerprint lengths are relative to the strongest profile. Model score percentages are rounded independently and may not total exactly 100%. The strip includes up to three profiles at 60% or more of the leader, then normalizes their widths within the selected group.
 
 The six sliders edit six primary notes; the selected sample’s other modeled terpenes remain present. Clear resets **all** values. Any edit is labeled illustrative. The ten profile-atlas signatures are expressly illustrative, not measured cultivar profiles. A displayed total is the sum of modeled terpene inputs, which may differ from the source panel’s total because unmodeled analytes are excluded.
 
@@ -72,7 +90,8 @@ The new showcase is isolated from prior Flower Spectrum repositories and deploym
 
 ## Validation
 
-- Nine automated tests cover known sample outputs, empty states, strip rules across deterministic randomized blends, reference signatures, portable exports, 38 unique educational entries, 18 social sample/format combinations, and complete buyer panels.
+- Eight further tests cover report parsing (result column versus detection limits, summed isomers, non-detects, unknown and ambiguous analytes, reports with no terpene panel, two-column PDF reconstruction and page selection), the Spectrum ID code, label rendering, and uploaded-flower social designs.
+- Nine earlier automated tests cover known sample outputs, empty states, strip rules across deterministic randomized blends, reference signatures, portable exports, 38 unique educational entries, 18 social sample/format combinations, and complete buyer panels.
 - The current browser suite checks all four tab panels, keyboard navigation, preserved tool state, cross-tool links, shared strain selections, SVG/PNG/HTML exports, browser history, old and new deep links, original artwork, dialog focus, both themes, and reduced motion. Results: `docs/qa-v3.json`. Earlier suites remain as historical validation of the source components.
 - Layouts checked at 320, 390, 768, and 1440 pixels with no horizontal overflow.
 - Screenshots and the latest browser check result are in `docs/`. To rerun browser checks, install Playwright as a local test tool, start the dev server, then run `node scripts/browser-qa-v3.cjs`. Set `SITE_URL` for production checks and `CHROME_PATH` to use a local Chrome executable.

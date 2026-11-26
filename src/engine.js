@@ -32,6 +32,27 @@ const TERPENES=[
   {key:"fenchol",profile:"herbal_woody",also:["piney_fresh"],tier:"impact"},
   {key:"geranyl_acetate",profile:"floral_soft",also:["fruity_sweet"],tier:"trace"},
   {key:"phytol",profile:"herbal_woody",tier:"trace"},
+  // Full source library: the terpenes a real lab report carries beyond the compact prototype set.
+  // Parameters are unchanged from the Flower Spectrum COA classifier's 38-terpene engine.
+  {key:"guaiol",profile:"herbal_woody",also:["piney_fresh"],tier:"impact"},
+  {key:"caryophyllene_oxide",profile:"spicy_warm",also:["herbal_woody"],tier:"impact"},
+  {key:"carene",profile:"piney_fresh",also:["citrus_bright"],tier:"impact"},
+  {key:"geraniol",profile:"floral_soft",also:["fruity_sweet"],potency:1.2,tier:"impact"},
+  {key:"borneol",profile:"herbal_woody",also:["piney_fresh"],tier:"impact"},
+  {key:"sabinene",profile:"piney_fresh",also:["spicy_warm"],tier:"impact"},
+  {key:"pcymene",profile:"gas_fuel",also:["spicy_warm"],potency:0.85,tier:"impact"},
+  {key:"eucalyptol",profile:"herbal_woody",also:["piney_fresh"],potency:1.2,tier:"impact"},
+  {key:"citronellol",profile:"floral_soft",also:["fruity_sweet"],tier:"trace"},
+  {key:"nerol",profile:"floral_soft",also:["citrus_bright"],tier:"trace"},
+  {key:"isopulegol",profile:"herbal_woody",also:["piney_fresh"],tier:"trace"},
+  {key:"pulegone",profile:"herbal_woody",tier:"trace"},
+  {key:"menthol",profile:"herbal_woody",tier:"trace"},
+  {key:"cedrene",profile:"herbal_woody",tier:"trace"},
+  {key:"bergamotene",profile:"spicy_warm",also:["herbal_woody"],tier:"trace"},
+  {key:"phellandrene",profile:"citrus_bright",also:["herbal_woody"],tier:"trace"},
+  {key:"gterpinene",profile:"piney_fresh",also:["citrus_bright"],tier:"trace"},
+  {key:"sabinene_hydrate",profile:"herbal_woody",also:["piney_fresh"],tier:"trace"},
+  {key:"aterpinene",profile:"piney_fresh",also:["citrus_bright"],tier:"trace"},
 ];
 const TBK=Object.fromEntries(TERPENES.map(t=>[t.key,t]));
 const POT_DEF={primary:1.0,impact:1.1,trace:0.7};
