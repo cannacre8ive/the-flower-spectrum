@@ -5,6 +5,7 @@ import {profileContent} from './content.js';
 import {parseCOA,extractFromPages,LABELS as TERPENE_LABELS} from './coa.js';
 import {FORMATS,PHOTO_FORMAT,PROFILE_FORMAT,socialSVG,saveSocial,saveFile,pngBlob} from './social-designs.js';
 import {LABELS,labelSVG,spectrumCode} from './labels.js';
+import {kitBuyerSheet,kitBuyerDocument} from './buyer-sheet.js';
 import {CLIP,drawClip,clipFonts,clipMime,recordClip} from './clip.js';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const isDark=()=>document.documentElement.dataset.theme!=='light';
@@ -63,7 +64,7 @@ async function readReport(file){
  finally{busy=false;$('#fsid-file').value='';}
 }
 function accept(parsed,{file='',page=null,scanned=false,defaults={},sample=false}={}){
- $('#fsid-sample-note').hidden=!sample;
+ $('#fsid-sample-note').hidden=!sample;if(!sample)sampleMeta=null;
  const count=Object.values(parsed.values).filter(v=>v>0).length;
  if(count<2){
   status(scanned?'This PDF is a scan with no readable text, so we could not find the terpene table. Paste the terpene results below instead.'
@@ -86,6 +87,8 @@ function renderRows(){
  $('#fsid-unmapped').innerHTML=flower.unmapped.length?`<p class="fsid-help"><strong>Shown on the report, not used:</strong> ${flower.unmapped.map(u=>`${esc(u.raw)} ${u.value}% (${esc(u.reason)})`).join('; ')}.</p>`:'';
 }
 const farm=()=>$('#fsid-farm').value.trim()||'Your farm',handle=()=>$('#fsid-handle').value.trim()||'@yourfarm';
+let sampleMeta=null;
+const buyerOpts=()=>({farm:farm(),thc:flower?.thc??null,reportedTotal:flower?.reportedTotal??null,harvest:sampleMeta?.harvest||'',source:sampleMeta?'Real example, shown with the grower’s approval':'From the lab report'});
 const now=()=>describe(flower.values,$('#fsid-name').value.trim()||'Your flower');
 
 /* ---------- Result ---------- */
@@ -124,6 +127,9 @@ function renderKit(f=now()){
  }else if(kit==='labels'){
   const label=LABELS[labelIndex];stage.innerHTML=labelSVG(label.id,f,{farm:$('#fsid-farm').value.trim(),dark:labelDark});stage.dataset.shape=label.id;
   info.innerHTML=`<p class="section-marker">${label.shape} · ${label.size.join(' × ')} px at 300 per inch</p><h3>${label.title}</h3><p>${label.description}</p>${list(LABELS,labelIndex,'data-label')}<label class="fsid-check"><input type="checkbox" id="label-dark" ${labelDark?'checked':''}> Dark stock</label><div class="export-actions"><button class="button light" data-export="png">Download PNG <span aria-hidden="true">↓</span></button><button class="button outline" data-export="svg">Editable SVG <span aria-hidden="true">↓</span></button></div><p class="fine-print">Design artwork only. It is not a compliance label; required regulatory content is yours to add.</p>`;
+ }else if(kit==='buyer'){
+  stage.dataset.shape='buyer';stage.innerHTML=`<div class="fsid-buyer">${kitBuyerSheet(f,buyerOpts())}</div>`;
+  info.innerHTML=`<p class="section-marker">One page · For wholesale buyers</p><h3>Buyer sheet</h3><p>The chemovar on one page for buyers: identity, fingerprint, reported chemistry, why it lands in its profile, and every terpene read from your report. Download it, add lineage, lot, price, minimum order and contact in the dashed fields, then print it to PDF.</p><div class="export-actions"><button class="button light" data-export="buyer">Download buyer sheet <span aria-hidden="true">↓</span></button></div><p class="fine-print">Editable HTML that prints to one page. Nothing commercial is filled in for you, and nothing from your report beyond the terpene values and totals is included.</p>`;
  }else if(kit==='clip'){
   const can=!!clipMime();
   stage.innerHTML=`<canvas id="kit-canvas" width="${CLIP.width}" height="${CLIP.height}" role="img" aria-label="Animated Spectrum ID for ${esc(f.name)}: the fingerprint draws in, followed by the name, strip and leading terpenes"></canvas>`;stage.dataset.shape='clip';
@@ -154,6 +160,7 @@ async function shareFile(blob,filename,text){
 async function runExport(button){
  const f=now(),action=button.dataset.export;if(!f)return;
  if(action==='replay'){playClip(f,{once:true});return;}
+ if(action==='buyer'){saveFile(kitBuyerDocument(f,buyerOpts()),`${slug(f.name)}-buyer-sheet.html`,'text/html');toast('Buyer sheet saved. Open it, fill in the dashed fields, then print to PDF.');return;}
  const old=button.innerHTML;button.disabled=true;button.textContent=action==='clip'?'Recording…':'Preparing…';
  try{
   if(action==='clip'){
@@ -199,7 +206,7 @@ async function runSample(){
  if(busy)return;busy=true;sampleButtons().forEach(b=>b.setAttribute('aria-busy','true'));status('Loading the Grape Diamonds example…');
  try{const [values,image]=await Promise.all([fetch('/assets/demo/grape-diamonds-terpenes.txt'),fetch('/assets/demo/grape-diamonds-flower.jpg')]);if(!values.ok)throw Error('The example could not load. Please try again.');
   photo=null;if(image.ok)await setPhoto(await image.blob()).catch(()=>{});kit='social';socialIndex=0;
-  accept(parseCOA(await values.text()),{defaults:{name:'Grape Diamonds',farm:'Ideal Cannabis',handle:'@idealcannabis'},sample:true});
+  sampleMeta={harvest:'07/21/2021'};accept(parseCOA(await values.text()),{defaults:{name:'Grape Diamonds',farm:'Ideal Cannabis',handle:'@idealcannabis'},sample:true});
  }catch(err){status(err.message,true);}finally{busy=false;sampleButtons().forEach(b=>b.removeAttribute('aria-busy'));}
 }
 document.addEventListener('click',e=>{const b=e.target.closest('[data-run-sample]');if(!b)return;if(b.tagName==='A')setTimeout(runSample,60);else runSample();});

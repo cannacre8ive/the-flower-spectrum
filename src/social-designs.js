@@ -11,6 +11,19 @@ export const FORMATS=[
 export const PHOTO_FORMAT={id:'photo',title:'Flower portrait',size:[1080,1350],shape:'4:5 / Portrait',role:'Let the flower lead',description:'Your photograph, full bleed, with the fingerprint and strip carrying the aroma identity. Made for the feed.'};
 // The profile feature: which aroma profile the flower falls into, and why, written from its own numbers.
 export const PROFILE_FORMAT={id:'profile',title:'Profile feature',size:[1080,1350],shape:'4:5 / Portrait',role:'Explain the identity',description:'Which profile your flower falls into and why: its leading terpene, what sits beside it, and how strongly it leans. Written from your numbers.'};
+// Why a flower falls into its leading profile, written from its own numbers. Shared by the profile feature and the buyer sheet.
+export function profileWhy(strain,c=classify(strain.values)){
+ const lead=c.ranked[0],name0=lead.label.split(' / ')[0];
+ const vals=Object.entries(strain.values||{}).filter(([,v])=>v>0).sort((x,y)=>y[1]-x[1]),total=vals.reduce((s,[,v])=>s+v,0)||1;
+ const [topKey,topVal]=vals[0]||['',0],topT=TERPENES.find(t=>t.key===topKey),topName=(strain.panel?.[0]?.[0]||topKey).replace(/^[αβγδ]-/,'');
+ const topProfile=PROFILES.find(p=>p.key===topT?.profile);
+ const beside=c.ranked.slice(1,3).filter(p=>p.pct>0);
+ return [
+  [`${topName} leads the panel`,`${topVal.toFixed(2)}% of ${total.toFixed(2)}% measured, about ${Math.round(topVal/total*100)}% of the terpenes. `+(topProfile?.key===lead.key?`It is a main ${name0.toLowerCase()} driver.`:`It feeds the ${(topProfile?.label||'').split(' / ')[0].toLowerCase()} profile.`)],
+  ['What sits beside it',beside.length?beside.map(p=>`${p.label.split(' / ')[0]} (${p.pct}%)`).join(' and ')+' round out the aroma.'+(beside.some(p=>p.key==='gas_fuel')?' Gas comes from the balance of caryophyllene, limonene and myrcene, not one terpene.':''):'Nothing else comes close.'],
+  [c.confidence==='Defined'?'A clear identity':c.confidence==='Leaning'?'A confident lean':'A true blend',`${name0} leads the next profile by ${c.gap} points. `+(c.confidence==='Defined'?'That is a single, defined profile.':c.confidence==='Leaning'?'Defined needs 22, so it leans rather than sits on one note.':'Under 10 points, so no one profile owns it.')]
+ ];
+}
 export function brandSVG(x,y,scale=1){return `<g transform="translate(${x} ${y}) scale(${scale})">${PROFILES.map((p,i)=>`<rect x="${i*8}" y="0" width="8" height="28" fill="${p.color}"/>`).join('')}<text x="96" y="25" fill="#eee9dd" font-family="Newsreader,Georgia,serif" font-size="33" font-weight="600">Flower Spectrum</text></g>`;}
 function text(x,y,value,size=30,color='#eee9dd',font='DM Sans,Arial,sans-serif',extra=''){return `<text x="${x}" y="${y}" fill="${color}" font-family="${font}" font-size="${size}" ${extra}>${esc(value)}</text>`;}
 function lines(x,y,value,size=30,width=48,color='#c1bdaf',line=1.35){const words=value.split(/\s+/),rows=[''];for(const word of words){let n=rows.length-1;if((rows[n]+' '+word).trim().length>width&&rows[n])rows.push(word);else rows[n]+=(rows[n]?' ':'')+word;}return rows.map((r,i)=>text(x,y+i*size*line,r,size,color)).join('');}
@@ -42,16 +55,7 @@ export function socialSVG(format,strain,{farm='Ideal Cannabis',handle='@idealcan
   strain.panel.slice(0,3).forEach((t,i)=>{a+=text(68+i*320,1218,t[0],20,'#c1bdaf')+text(68+i*320,1252,t[1].toFixed(2)+'%',28);});
 }else if(format==='profile'){
   const copy=profileCopy||{name:lead.label.split(' / ')[0],pair:lead.label.split(' / ')[1]||'',notes:''},name0=lead.label.split(' / ')[0];
-  const vals=Object.entries(strain.values||{}).filter(([,v])=>v>0).sort((x,y)=>y[1]-x[1]),total=vals.reduce((s,[,v])=>s+v,0)||1;
-  const [topKey,topVal]=vals[0]||['',0],topT=TERPENES.find(t=>t.key===topKey),topName=(strain.panel?.[0]?.[0]||topKey).replace(/^[αβγδ]-/,'');
-  const topProfile=PROFILES.find(p=>p.key===topT?.profile);
-  const r=c.ranked,beside=r.slice(1,3).filter(p=>p.pct>0);
-  const notes=(copy.notes||'').replace(/\.$/,'').split('. ').join(', ').toLowerCase();
-  const why=[
-   [`${topName} leads the panel`,`${topVal.toFixed(2)}% of ${total.toFixed(2)}% measured, about ${Math.round(topVal/total*100)}% of the terpenes. `+(topProfile?.key===lead.key?`It is a main ${name0.toLowerCase()} driver.`:`It feeds the ${(topProfile?.label||'').split(' / ')[0].toLowerCase()} profile.`)],
-   ['What sits beside it',beside.length?beside.map(p=>`${p.label.split(' / ')[0]} (${p.pct}%)`).join(' and ')+' round out the aroma.'+(beside.some(p=>p.key==='gas_fuel')?' Gas comes from the balance of caryophyllene, limonene and myrcene, not one terpene.':''):'Nothing else comes close.'],
-   [c.confidence==='Defined'?'A clear identity':c.confidence==='Leaning'?'A confident lean':'A true blend',`${name0} leads the next profile by ${c.gap} points. `+(c.confidence==='Defined'?'That is a single, defined profile.':c.confidence==='Leaning'?'Defined needs 22, so it leans rather than sits on one note.':'Under 10 points, so no one profile owns it.')]
-  ];
+  const r=c.ranked,why=profileWhy(strain,c),notes=(copy.notes||'').replace(/\.$/,'').split('. ').join(', ').toLowerCase();
   a+=text(68,180,'Profile feature · '+strain.name,23,lead.color)+`<rect x="68" y="208" width="944" height="12" fill="${lead.color}"/>`;
   a+=text(68,330,copy.name||name0,118,'#eee9dd',serif)+text(72,388,[copy.pair,notes].filter(Boolean).join(' · '),30,lead.color)+fp(c,742,236,270);
   a+=text(68,472,'Why it lands here',22,'#a4ab97');

@@ -64,3 +64,13 @@ test('the Grape Diamonds example reads cleanly and renders the profile feature',
  const svg=socialSVG('profile',flower,{farm:'Ideal Cannabis',handle:'@idealcannabis',footer:'From the lab report · Aroma model, not an effects claim'});
  assert.ok(svg.includes(`width="${PROFILE_FORMAT.size[0]}" height="${PROFILE_FORMAT.size[1]}"`));assert.ok(svg.includes('Why it lands here'));assert.ok(svg.includes('A confident lean'));assert.ok(!svg.includes('NaN'));assert.ok(!svg.includes('undefined'));
 });
+test('the kit buyer sheet uses only terpene values and leaves commercial fields for the farm',async()=>{
+ const {readFileSync}=await import('node:fs');const {kitBuyerSheet,kitBuyerDocument,buyerDocument}=await import('../src/buyer-sheet.js');
+ const r=parseCOA(readFileSync(new URL('../public/assets/demo/grape-diamonds-terpenes.txt',import.meta.url),'utf8'));
+ const f={...flowerOf(r.values,'Grape <Diamonds>'),aroma:'Earthy-forward.',code:'FS·4912313033'};
+ const html=kitBuyerSheet(f,{farm:'Ideal Cannabis',thc:r.thc,reportedTotal:r.reportedTotal});
+ assert.ok(html.includes('Grape &lt;Diamonds&gt;'));assert.ok(html.includes('2.17%'));assert.ok(html.includes('17.96'));assert.ok(html.includes('Why it reads earthy'));assert.ok(html.includes('Add before sending'));
+ assert.ok(!html.includes('NaN'));assert.ok(!html.includes('undefined'));assert.ok(!html.includes('Historical sample'));
+ const doc=kitBuyerDocument(f,{farm:'Ideal Cannabis'});assert.ok(doc.startsWith('<!doctype html>'));assert.ok(doc.includes('contenteditable="true"'));assert.ok(doc.includes('.chemovar-sheet{'));
+ assert.ok(buyerDocument(STRAINS[0],'Farm').includes('.chemovar-sheet{'));
+});

@@ -106,3 +106,4 @@
 }
 
 .fsid-sample-note{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 28px;margin:0 0 28px;padding:18px 22px;background:var(--surface);border:1px solid var(--edge);border-radius:6px}.fsid-sample-note p{margin:0;max-width:72ch;font-size:15px;line-height:1.55;color:var(--text)}.fsid-sample-note .button{flex:0 0 auto}
+.fsid-kit-body:has(>.fsid-stage[data-kit="buyer"]){grid-template-columns:1fr}.fsid-stage[data-kit="buyer"]{max-height:calc(100dvh - 160px);overflow:auto;overscroll-behavior:contain;border:1px solid var(--edge);border-radius:3px}.fsid-buyer .chemovar-sheet{border:0;border-radius:0}.sheet-gap{font-style:normal;color:var(--secondary)}
