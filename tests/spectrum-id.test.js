@@ -29,6 +29,18 @@ test('two-column PDF tables are rebuilt by position and the terpene page is chos
  assert.equal(found.page,2);assert.deepEqual(r.values,{limonene:.87,myrcene:.14,linalool:.44,caryophyllene:.31});assert.equal(r.meta.product,'Lemon Test');
  assert.equal(extractFromPages([{items:cover,width:612}]).page,null);
 });
+test('PDF tables use the header to find the result column and convert mg/g',()=>{
+ const item=(str,x,y)=>({str,transform:[1,0,0,1,x,y],width:str.length*5});
+ const row=(y,...cells)=>cells.map((c,i)=>item(c,40+i*110,y));
+ const read=items=>parseCOA(extractFromPages([{items,width:612}]).text).values;
+ // The percent sign appears only in the header; LOD and LOQ come first.
+ assert.deepEqual(read([item('Terpenes',40,700),...row(670,'Analyte','LOD','LOQ','Result (%)'),...row(650,'Limonene','0.003','0.010','0.870'),...row(630,'Linalool','0.003','0.010','0.440')]),{limonene:.87,linalool:.44});
+ assert.deepEqual(read([item('Terpenes',40,700),...row(670,'Analyte','LOQ','Result (mg/g)'),...row(650,'Limonene','0.2','8.7'),...row(630,'Linalool','0.2','4.4')]),{limonene:.87,linalool:.44});
+ // Units printed on their own row beneath the column names.
+ assert.deepEqual(read([item('Terpenes',40,700),...row(670,'Analyte','LOQ','Mass','Mass'),...[['%',150],['mg/g',260],['%',370]].map(([u,x])=>item(u,x,655)),...row(640,'Limonene','0.02','8.7','0.87'),...row(620,'Linalool','0.02','4.4','0.44')]),{limonene:.87,linalool:.44});
+ // A non-detect in the result column is not replaced by the reporting limit beside it.
+ assert.deepEqual(read([item('Terpenes',40,700),...row(670,'Analyte','LOQ','Result (%)'),...row(650,'Limonene','0.02','0.87'),...row(630,'Linalool','0.02','0.44'),...row(610,'Myrcene','0.02','<LOQ')]),{limonene:.87,linalool:.44});
+});
 test('the Spectrum ID code is ten digits with the leader at 9',()=>{
  for(const s of STRAINS){const c=classify(s.values),code=spectrumCode(c);assert.match(code,/^FS·\d{10}$/);assert.ok(code.includes('9'));}
  assert.equal(spectrumCode(classify({limonene:1})).slice(3)[2],'9');

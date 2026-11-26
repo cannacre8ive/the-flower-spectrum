@@ -165,21 +165,45 @@ function columnLines(items,width,side){
  return pdfItemsToLines((items||[]).filter(item=>{const x=Number(item.transform&&item.transform[4])||0;return side==='left'?x<mid:x>=mid;}));
 }
 function cellsOf(line){return line.split(/\t+/).map(x=>x.trim()).filter(Boolean);}
+const LIMIT_COL=/\b(lod|loq|lloq|mdl|rl|limit|limits)\b/i,UNIT_ONLY=/^(%|mg\s*\/\s*g|ppm|wt\s*%|% ?w\/w)$/i;
+const unitOf=text=>/mg\s*\/\s*g/i.test(text)?'mg/g':/%|percent/i.test(text)?'%':'';
+// Reads a table header (and a units-only row beneath it, where a lab prints one) to find the
+// result column and its unit, so a detection limit is never taken for a measurement.
+function pdfHeader(cells,next){
+ if(cells.length<2||!NAME_HDR.test(cells[0]))return null;
+ const units=next&&next.length&&next.every(c=>UNIT_ONLY.test(c))?next:null;
+ // A two-column table repeats its header across the row; only the first block describes the columns.
+ const repeat=cells.findIndex((c,i)=>i>0&&NAME_HDR.test(c)),cols=cells.slice(0,repeat>0?repeat:cells.length);
+ const candidates=cols.map((label,i)=>({i,label,unit:unitOf(label)||(units?unitOf(units[i-1]||''):'')})).filter(c=>c.i>0&&!LIMIT_COL.test(c.label));
+ const pick=candidates.find(c=>c.unit==='%')||candidates.find(c=>c.unit==='mg/g')||candidates.find(c=>/result|conc|amount|mass/i.test(c.label));
+ return pick?{valIdx:pick.i,unit:pick.unit||'%',unitsRow:!!units}:null;
+}
 export function pdfTerpeneRows(items,width){
  const read=sides=>{
   const out=[];
-  sides.forEach(side=>(side==='full'?pdfItemsToLines(items):columnLines(items,width,side)).split(/\r?\n/).forEach(line=>{
-   const cells=cellsOf(line);if(cells.length<2)return;
-   const rawName=cells[0].replace(/^[-–—•\s]+/,'').trim(),cn=canon(rawName);
-   if(!LOOKUP[cn]&&!AMBIGUOUS[cn])return;
-   // A percent column is preferred when a row labels one; otherwise the first value after the name.
-   const pct=cells.slice(1).find(c=>/%/.test(c)&&numFrom(c)!=null),value=numFrom(pct||cells[1]);
-   if(value!=null&&value>0)out.push(rawName+'\t'+value+' %');
-  }));
+  sides.forEach(side=>{
+   const lines=(side==='full'?pdfItemsToLines(items):columnLines(items,width,side)).split(/\r?\n/).map(cellsOf);let header=null;
+   lines.forEach((cells,n)=>{
+    const found=pdfHeader(cells,lines[n+1]);if(found){header=found;return;}
+    if(cells.length<2)return;
+    const rawName=cells[0].replace(/^[-–—•\s]+/,'').trim(),cn=canon(rawName);
+    if(!LOOKUP[cn]&&!AMBIGUOUS[cn])return;
+    let value=null;
+    if(header&&cells.length>header.valIdx){value=numFrom(cells[header.valIdx]);if(value!=null&&header.unit==='mg/g')value=value/10;}
+    else{
+     // No usable header: a cell that states its own unit is preferred, then the first value after the name.
+     const pct=cells.slice(1).find(c=>/%/.test(c)&&numFrom(c)!=null),mgg=cells.slice(1).find(c=>/mg\s*\/\s*g/i.test(c)&&numFrom(c)!=null);
+     value=pct?numFrom(pct):mgg?numFrom(mgg)/10:numFrom(cells[1]);
+    }
+    if(value!=null&&value>0)out.push(rawName+'\t'+(+value.toFixed(4))+' %');
+   });
+  });
   return out;
  };
- const split=read(['left','right']),full=read(['full']);
- return full.length>split.length?full:split;
+ // Side-by-side tables repeat an analyte name further along the same line; only those are split down the middle.
+ const known=c=>{const cn=canon(c.replace(/^[-–—•\s]+/,''));return !!(LOOKUP[cn]||AMBIGUOUS[cn]);};
+ const sideBySide=pdfItemsToLines(items).split(/\r?\n/).map(cellsOf).some(cells=>cells.slice(1).some(c=>NAME_HDR.test(c)||known(c)));
+ return read(sideBySide?['left','right']:['full']);
 }
 function pdfCannabinoidRows(items,width){
  const lines=[];
