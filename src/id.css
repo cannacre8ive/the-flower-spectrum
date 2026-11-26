@@ -104,3 +104,5 @@
  .fsid-stage{min-height:0;padding:14px}.fsid-stage>svg,.fsid-stage>canvas{height:auto;width:100%;max-height:70vh}.fsid-stage[data-shape=drop]>svg,.fsid-stage[data-shape=clip]>canvas{width:auto;height:62vh}
  .fsid-info h3{font-size:30px}.fsid-info .export-actions .button{flex:1 1 auto;min-height:44px}
 }
+
+.fsid-sample-note{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 28px;margin:0 0 28px;padding:18px 22px;background:var(--surface);border:1px solid var(--edge);border-radius:6px}.fsid-sample-note p{margin:0;max-width:72ch;font-size:15px;line-height:1.55;color:var(--text)}.fsid-sample-note .button{flex:0 0 auto}

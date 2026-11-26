@@ -55,3 +55,12 @@ test('social designs accept an uploaded flower without historical wording',()=>{
  for(const id of ['highlight','drop','spotlight','fingerprint','voice','photo']){const svg=socialSVG(id,strain,options);assert.ok(!svg.includes('Historical'));assert.ok(!svg.includes('null'));assert.ok(!svg.includes('NaN'));assert.ok(svg.includes('From the lab report'));}
  const photo=socialSVG('photo',strain,options);assert.ok(photo.includes(`width="${PHOTO_FORMAT.size[0]}" height="${PHOTO_FORMAT.size[1]}"`));assert.ok(photo.includes('<image href="data:image/jpeg'));
 });
+test('the Grape Diamonds example reads cleanly and renders the profile feature',async()=>{
+ const {readFileSync}=await import('node:fs');const {PROFILE_FORMAT}=await import('../src/social-designs.js');
+ const r=parseCOA(readFileSync(new URL('../public/assets/demo/grape-diamonds-terpenes.txt',import.meta.url),'utf8'));
+ assert.equal(Object.keys(r.values).length,12);assert.equal(r.unmapped.length,0);assert.equal(r.reportedTotal,2.17);assert.equal(r.thc,17.96);assert.equal(r.meta.product,'Grape Diamonds');
+ const total=Object.values(r.values).reduce((a,b)=>a+b,0);assert.ok(Math.abs(total-2.17)<1e-9);
+ const flower=flowerOf(r.values,'Grape Diamonds'),c=flower.c;assert.equal(c.ranked[0].key,'earthy_dank');assert.equal(c.confidence,'Leaning');
+ const svg=socialSVG('profile',flower,{farm:'Ideal Cannabis',handle:'@idealcannabis',footer:'From the lab report · Aroma model, not an effects claim'});
+ assert.ok(svg.includes(`width="${PROFILE_FORMAT.size[0]}" height="${PROFILE_FORMAT.size[1]}"`));assert.ok(svg.includes('Why it lands here'));assert.ok(svg.includes('A confident lean'));assert.ok(!svg.includes('NaN'));assert.ok(!svg.includes('undefined'));
+});

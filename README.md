@@ -12,7 +12,11 @@ The site now opens on a short landing page (`/`) that leads growers into **Your 
 
 1. **Upload** a lab report PDF that includes a terpene panel (text and CSV also work, or paste the table). The file is read in the browser with a self-hosted copy of PDF.js and is never uploaded.
 2. **Review** every value that was read, beside the name printed on the report. Values are editable; unrecognised analytes are listed, never guessed. A report with fewer than two terpene results is declined with a plain explanation.
-3. **Take the kit:** a Spectrum ID card and ten-digit code, label art (3 × 2 in jar label, 2 in round seal, 4 × 1 in shelf strip at 300 px per inch, light or dark stock), social graphics at native size (five formats, plus a full-bleed portrait when a flower photo is added), a 7-second 1080 × 1920 clip recorded in the browser (MP4 where supported, otherwise WebM), and three caption templates. Share uses the device share sheet where available.
+3. **Take the kit:** a Spectrum ID card and ten-digit code, label art (3 × 2 in jar label, 2 in round seal, 4 × 1 in shelf strip at 300 px per inch, light or dark stock), social graphics at native size (six formats including the profile feature, plus a full-bleed portrait when a flower photo is added), a 7-second 1080 × 1920 clip recorded in the browser (MP4 where supported, otherwise WebM), and three caption templates. Share uses the device share sheet where available.
+
+**See a real example.** The landing page and the Spectrum ID tool both offer a finished run before anyone uploads: Grape Diamonds from Ideal Cannabis, shown with the grower's approval. It loads the flower photo and the terpene values transcribed from the batch's ChemHistory lab report (`public/assets/demo/grape-diamonds-terpenes.txt`), then walks through the same review step and kit as an upload. Only the values are published; the lab report itself, which carries the grower's contact and license details, is not. The Johnny Glaze sample PDF remains available as a full-report example.
+
+**Profile feature.** The kit now includes a 1080 × 1350 profile feature: which profile the flower falls into and why, written from its own numbers (leading terpene and its share of the panel, the profiles beside it, and how strongly it leans).
 
 The Spectrum ID code is a literal encoding of the fingerprint: ten digits in fixed sector order, each 0 to 9 relative to the leading profile. The sample report and photograph (`public/assets/demo/`) are the Johnny Glaze demo from the classifier repository.
 

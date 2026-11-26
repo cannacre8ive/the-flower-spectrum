@@ -1,4 +1,4 @@
-import {PROFILES,classify,bandSegments,blendName} from './engine.js';
+import {PROFILES,TERPENES,classify,bandSegments,blendName} from './engine.js';
 import {fingerprint,escapeXML as esc} from './visuals.js';
 export const FORMATS=[
  {id:'highlight',title:'Strain highlight',size:[1080,1080],shape:'1:1 / Feed',role:'Introduce the flower',description:'A signature launch card: strain, aroma identity, leading analytes, and a distinctive fingerprint. A coherent starting point for a farm’s feed.'},
@@ -9,13 +9,15 @@ export const FORMATS=[
  {id:'voice',title:'Brand voice',size:[1080,1080],shape:'1:1 / Editorial',role:'Express a point of view',description:'A typographic brand statement built from the same system. A moment of perspective that still belongs unmistakably to the farm.'}
 ];
 export const PHOTO_FORMAT={id:'photo',title:'Flower portrait',size:[1080,1350],shape:'4:5 / Portrait',role:'Let the flower lead',description:'Your photograph, full bleed, with the fingerprint and strip carrying the aroma identity. Made for the feed.'};
+// The profile feature: which aroma profile the flower falls into, and why, written from its own numbers.
+export const PROFILE_FORMAT={id:'profile',title:'Profile feature',size:[1080,1350],shape:'4:5 / Portrait',role:'Explain the identity',description:'Which profile your flower falls into and why: its leading terpene, what sits beside it, and how strongly it leans. Written from your numbers.'};
 export function brandSVG(x,y,scale=1){return `<g transform="translate(${x} ${y}) scale(${scale})">${PROFILES.map((p,i)=>`<rect x="${i*8}" y="0" width="8" height="28" fill="${p.color}"/>`).join('')}<text x="96" y="25" fill="#eee9dd" font-family="Newsreader,Georgia,serif" font-size="33" font-weight="600">Flower Spectrum</text></g>`;}
 function text(x,y,value,size=30,color='#eee9dd',font='DM Sans,Arial,sans-serif',extra=''){return `<text x="${x}" y="${y}" fill="${color}" font-family="${font}" font-size="${size}" ${extra}>${esc(value)}</text>`;}
 function lines(x,y,value,size=30,width=48,color='#c1bdaf',line=1.35){const words=value.split(/\s+/),rows=[''];for(const word of words){let n=rows.length-1;if((rows[n]+' '+word).trim().length>width&&rows[n])rows.push(word);else rows[n]+=(rows[n]?' ':'')+word;}return rows.map((r,i)=>text(x,y+i*size*line,r,size,color)).join('');}
 function fp(c,x,y,size){return `<svg x="${x}" y="${y}" width="${size}" height="${size}" viewBox="0 0 500 500">${fingerprint(c,{dark:true}).replace(/<svg[^>]*>/,'').replace(/<\/svg>$/,'')}</svg>`;}
 function band(c,x,y,w,h){let offset=x;return bandSegments(c).map(p=>{const width=w*p.frac,s=`<rect x="${offset}" y="${y}" width="${width}" height="${h}" fill="${p.color}"/>`;offset+=width;return s;}).join('');}
 export function socialSVG(format,strain,{farm='Ideal Cannabis',handle='@idealcannabis',other,profileCopy,footer='Historical sample · 2023 · Portfolio demonstration',stat,dropKicker='Drop announcement / example',photo}={}){
- const f=[...FORMATS,PHOTO_FORMAT].find(f=>f.id===format)||FORMATS[0],w=f.size[0],h=f.size[1],c=classify(strain.values),lead=c.ranked[0],blend=blendName(c),serif='Newsreader,Georgia,serif';
+ const f=[...FORMATS,PHOTO_FORMAT,PROFILE_FORMAT].find(f=>f.id===format)||FORMATS[0],w=f.size[0],h=f.size[1],c=classify(strain.values),lead=c.ranked[0],blend=blendName(c),serif='Newsreader,Georgia,serif';
  // The headline figure defaults to the historical THC value; uploaded flowers pass their own.
  stat=stat||{value:strain.thc+'%',label:'THC · historical panel',line:strain.thc+'% THC'};
  let a=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(f.title+' for '+strain.name)}"><title>${esc(f.title+' — '+strain.name)}</title><rect width="${w}" height="${h}" fill="#151713"/><defs><pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".7" fill="#6c735a" opacity=".3"/></pattern></defs><rect width="${w}" height="${h}" fill="url(#dots)"/>`;
@@ -38,6 +40,25 @@ export function socialSVG(format,strain,{farm='Ideal Cannabis',handle='@idealcan
   a+=`<circle cx="872" cy="968" r="150" fill="#151713" opacity=".86"/>`+fp(c,732,828,280);
   a+=text(68,1010,strain.name,strain.name.length>16?72:92,'#eee9dd',serif)+text(72,1064,blend+' / '+c.confidence,27,lead.color)+band(c,68,1120,944,44);
   strain.panel.slice(0,3).forEach((t,i)=>{a+=text(68+i*320,1218,t[0],20,'#c1bdaf')+text(68+i*320,1252,t[1].toFixed(2)+'%',28);});
+}else if(format==='profile'){
+  const copy=profileCopy||{name:lead.label.split(' / ')[0],pair:lead.label.split(' / ')[1]||'',notes:''},name0=lead.label.split(' / ')[0];
+  const vals=Object.entries(strain.values||{}).filter(([,v])=>v>0).sort((x,y)=>y[1]-x[1]),total=vals.reduce((s,[,v])=>s+v,0)||1;
+  const [topKey,topVal]=vals[0]||['',0],topT=TERPENES.find(t=>t.key===topKey),topName=(strain.panel?.[0]?.[0]||topKey).replace(/^[αβγδ]-/,'');
+  const topProfile=PROFILES.find(p=>p.key===topT?.profile);
+  const r=c.ranked,beside=r.slice(1,3).filter(p=>p.pct>0);
+  const notes=(copy.notes||'').replace(/\.$/,'').split('. ').join(', ').toLowerCase();
+  const why=[
+   [`${topName} leads the panel`,`${topVal.toFixed(2)}% of ${total.toFixed(2)}% measured, about ${Math.round(topVal/total*100)}% of the terpenes. `+(topProfile?.key===lead.key?`It is a main ${name0.toLowerCase()} driver.`:`It feeds the ${(topProfile?.label||'').split(' / ')[0].toLowerCase()} profile.`)],
+   ['What sits beside it',beside.length?beside.map(p=>`${p.label.split(' / ')[0]} (${p.pct}%)`).join(' and ')+' round out the aroma.'+(beside.some(p=>p.key==='gas_fuel')?' Gas comes from the balance of caryophyllene, limonene and myrcene, not one terpene.':''):'Nothing else comes close.'],
+   [c.confidence==='Defined'?'A clear identity':c.confidence==='Leaning'?'A confident lean':'A true blend',`${name0} leads the next profile by ${c.gap} points. `+(c.confidence==='Defined'?'That is a single, defined profile.':c.confidence==='Leaning'?'Defined needs 22, so it leans rather than sits on one note.':'Under 10 points, so no one profile owns it.')]
+  ];
+  a+=text(68,180,'Profile feature · '+strain.name,23,lead.color)+`<rect x="68" y="208" width="944" height="12" fill="${lead.color}"/>`;
+  a+=text(68,330,copy.name||name0,118,'#eee9dd',serif)+text(72,388,[copy.pair,notes].filter(Boolean).join(' · '),30,lead.color)+fp(c,742,236,270);
+  a+=text(68,472,'Why it lands here',22,'#a4ab97');
+  why.forEach(([hd,body],i)=>{const y=518+i*108;a+=text(68,y,hd,30,'#eee9dd',serif)+lines(68,y+36,body,22,66,'#c1bdaf',1.36);});
+  a+=text(68,856,'Model score by profile',22,'#a4ab97');
+  r.slice(0,5).forEach((p,i)=>{const y=876+i*56,w=Math.max(4,Math.round(560*p.pct/(r[0].pct||1)));a+=text(68,y+28,p.label,24,'#dedaca')+`<rect x="388" y="${y+4}" width="${w}" height="30" rx="3" fill="${p.color}"/>`+text(400+w,y+28,p.pct+'%',24,'#eee9dd');});
+  a+=text(68,1196,'Model scores, not measured aroma percentages.',21,'#a4ab97');
  }else if(format==='fingerprint'){
   a+=text(68,200,'Every flower has a signature.',48,'#eee9dd',serif)+fp(c,170,250,740);
   a+=text(540,1040,strain.name,74,'#eee9dd',serif,'text-anchor="middle"')+text(540,1090,blend,27,lead.color,undefined,'text-anchor="middle"')+band(c,68,1160,944,48);
@@ -56,7 +77,7 @@ export function socialSVG(format,strain,{farm='Ideal Cannabis',handle='@idealcan
   a+=text(68,188,'Trust your nose',23,lead.color)+lines(68,337,'The number on the jar is only part of the story.',75,24,'#eee9dd',1.15);
   a+=lines(68,751,'Aroma adds another dimension. A familiar language for a wonderfully complex flower.',31,49,'#c1bdaf',1.4)+band(c,68,914,944,28);
  }
- a+=`<path d="M68 ${h-70}H1012" stroke="#414837"/>`+text(68,h-36,footer,14,'#a4ab97')+text(1012,h-36,handle,17,'#c4b275',undefined,'text-anchor="end"')+'</svg>';
+ a+=`<path d="M68 ${h-70}H1012" stroke="#414837"/>`+text(68,h-36,footer,16,'#a4ab97')+text(1012,h-36,handle,17,'#dedaca',undefined,'text-anchor="end"')+'</svg>';
  return a;
 }
 let fontCache;

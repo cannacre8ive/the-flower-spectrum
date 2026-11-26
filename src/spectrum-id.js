@@ -3,7 +3,7 @@ import {PROFILES,STRAINS,classify,bandSegments,blendName} from './engine.js';
 import {fingerprint,strip,exportArtwork,escapeXML as esc} from './visuals.js';
 import {profileContent} from './content.js';
 import {parseCOA,extractFromPages,LABELS as TERPENE_LABELS} from './coa.js';
-import {FORMATS,PHOTO_FORMAT,socialSVG,saveSocial,saveFile,pngBlob} from './social-designs.js';
+import {FORMATS,PHOTO_FORMAT,PROFILE_FORMAT,socialSVG,saveSocial,saveFile,pngBlob} from './social-designs.js';
 import {LABELS,labelSVG,spectrumCode} from './labels.js';
 import {CLIP,drawClip,clipFonts,clipMime,recordClip} from './clip.js';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
@@ -62,7 +62,8 @@ async function readReport(file){
  }catch(e){status(e?.name==='PasswordException'?'This PDF is password protected. Remove the password and try again.':(e?.message||'This file could not be read.'),true);}
  finally{busy=false;$('#fsid-file').value='';}
 }
-function accept(parsed,{file='',page=null,scanned=false,defaults={}}={}){
+function accept(parsed,{file='',page=null,scanned=false,defaults={},sample=false}={}){
+ $('#fsid-sample-note').hidden=!sample;
  const count=Object.values(parsed.values).filter(v=>v>0).length;
  if(count<2){
   status(scanned?'This PDF is a scan with no readable text, so we could not find the terpene table. Paste the terpene results below instead.'
@@ -74,7 +75,7 @@ function accept(parsed,{file='',page=null,scanned=false,defaults={}}={}){
  if(defaults.farm!=null)$('#fsid-farm').value=defaults.farm;
  if(defaults.handle!=null)$('#fsid-handle').value=defaults.handle;
  $('#fsid-start').hidden=true;$('#fsid-result').hidden=false;
- status(`Read ${count} terpenes${page?` from page ${page}`:''}${file?` of ${file}`:''}. Check them against your report.`);
+ status(sample?`Read ${count} terpenes from the Grape Diamonds lab results. Step through the values, then the kit below.`:`Read ${count} terpenes${page?` from page ${page}`:''}${file?` of ${file}`:''}. Check them against your report.`);
  renderRows();render();$('#fsid-card').scrollIntoView({block:'nearest'});return true;
 }
 function renderRows(){
@@ -92,7 +93,7 @@ function totalStat(f){
  const reported=flower.reportedTotal>0?flower.reportedTotal:null,value=(reported??f.totalTerp).toFixed(2)+'%';
  return {value,label:reported?'total terpenes · lab report':'terpenes read from the report',line:value+' terpenes'};
 }
-function socialFormats(){return [...(photo?[PHOTO_FORMAT]:[]),...FORMATS.filter(f=>f.id!=='compare')];}
+function socialFormats(){return [...(photo?[PHOTO_FORMAT]:[]),PROFILE_FORMAT,...FORMATS.filter(f=>f.id!=='compare')];}
 function socialArt(f,format){return socialSVG(format.id,{...f,thc:flower.thc},{farm:farm(),handle:handle(),profileCopy:profileContent[f.leadIndex],footer:'From the lab report · Aroma model, not an effects claim',stat:totalStat(f),dropKicker:'New drop',photo:photo?.url});}
 function clipData(f){return {name:f.name,farm:farm(),handle:handle(),blend:blendName(f.c),ranked:f.c.ranked,segments:bandSegments(f.c),top:f.panel,total:f.totalTerp,code:f.code,photo:photo?.image||null};}
 function captions(f){
@@ -191,11 +192,23 @@ $('#fsid-demo').addEventListener('click',async e=>{
   await readReport(new File([await report.blob()],'johnny-glaze-coa.pdf',{type:'application/pdf'}));
  }catch(err){status(err.message,true);}finally{button.disabled=false;}
 });
+/* A real, finished example: Grape Diamonds by Ideal Cannabis, shared with the grower's approval.
+   Only the terpene values transcribed from its lab report are published, never the report itself. */
+const sampleButtons=()=>document.querySelectorAll('[data-run-sample]');
+async function runSample(){
+ if(busy)return;busy=true;sampleButtons().forEach(b=>b.setAttribute('aria-busy','true'));status('Loading the Grape Diamonds example…');
+ try{const [values,image]=await Promise.all([fetch('/assets/demo/grape-diamonds-terpenes.txt'),fetch('/assets/demo/grape-diamonds-flower.jpg')]);if(!values.ok)throw Error('The example could not load. Please try again.');
+  photo=null;if(image.ok)await setPhoto(await image.blob()).catch(()=>{});kit='social';socialIndex=0;
+  accept(parseCOA(await values.text()),{defaults:{name:'Grape Diamonds',farm:'Ideal Cannabis',handle:'@idealcannabis'},sample:true});
+ }catch(err){status(err.message,true);}finally{busy=false;sampleButtons().forEach(b=>b.removeAttribute('aria-busy'));}
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-run-sample]');if(!b)return;if(b.tagName==='A')setTimeout(runSample,60);else runSample();});
+document.addEventListener('click',e=>{if(!e.target.closest('[data-sample-own]'))return;document.querySelector('#fsid-reset').click();});
 $('#fsid-paste-go').addEventListener('click',()=>{const text=$('#fsid-paste').value;if(!text.trim()){status('Paste the terpene rows from your report first.',true);return;}accept(parseCOA(text),{});});
 $('#fsid-rows').addEventListener('input',e=>{const input=e.target.closest('[data-value]');if(!input)return;const v=Number(input.value);flower.values[input.dataset.value]=Number.isFinite(v)&&v>0?v:0;render();});
 ['fsid-name','fsid-farm','fsid-handle'].forEach(id=>$('#'+id).addEventListener('input',render));
 $('#fsid-photo').addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;try{await setPhoto(file);render();toast('Photo added. The portrait format is now in your kit.');}catch(err){toast(err.message);}});
-$('#fsid-reset').addEventListener('click',()=>{cancelAnimationFrame(clipFrame);flower=null;photo=null;kit='social';socialIndex=0;$('#fsid-photo').value='';$('#fsid-result').hidden=true;$('#fsid-start').hidden=false;status('');$('#fsid-title').scrollIntoView({block:'center'});});
+$('#fsid-reset').addEventListener('click',()=>{cancelAnimationFrame(clipFrame);$('#fsid-sample-note').hidden=true;flower=null;photo=null;kit='social';socialIndex=0;$('#fsid-photo').value='';$('#fsid-result').hidden=true;$('#fsid-start').hidden=false;status('');$('#fsid-title').scrollIntoView({block:'center'});});
 $$('[data-kit]').forEach(b=>b.addEventListener('click',()=>{kit=b.dataset.kit;renderKit();}));
 $('#kit-info').addEventListener('click',e=>{
  const s=e.target.closest('[data-social]'),l=e.target.closest('[data-label]'),x=e.target.closest('[data-export]');
